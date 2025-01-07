@@ -69,7 +69,7 @@ export const NavNavigation = () => {
 
     return (
         <div className={"w-auto"} ref={ref}>
-            <div  className={"w-auto flex gap-4 md:gap-10 lg:gap-14 relative"}>
+            <div  className={"w-auto flex gap-10 sm:gap-7 md:gap-10 lg:gap-14 relative"}>
                 {navigation.map((item, index) => (
                     <div 
                         ref={re => {
@@ -86,11 +86,11 @@ export const NavNavigation = () => {
                         )}
                     >
                         <Link href={item.href} className={cn(
-                            "flex cursor-pointer items-center flex-col sm:flex-row gap-1 sm:gap-2 lg:gap-3",
+                            "flex cursor-pointer items-center gap-1 sm:gap-2 lg:gap-3",
                             pathname === "/" && item.href === "/" ? "text-white" : item.href !== '/' && pathname.includes(item.href) ? "text-white" : "text-gray-400",
                         )}>
                             {item.icon && <item.icon className={"w-5 lg:w-7"}/>}
-                            <span>{item.title}</span>
+                            <span className="hidden sm:block">{item.title}</span>
                         </Link>
                     </div>
                 ))}

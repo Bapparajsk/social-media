@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className='dark'>
-      <body className={"max-w-[1200px] mx-auto py-2"}>
+      <body className={"max-w-[1200px] mx-auto"}>
       <Providers>
           <NavbarComponent/>
           <main className={"px-2 py-4"}>
