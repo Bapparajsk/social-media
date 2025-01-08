@@ -1,4 +1,4 @@
-import { IconDotsVertical, IconSearch } from "@tabler/icons-react";
+import { IconSettings, IconSearch } from "@tabler/icons-react";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 
@@ -14,7 +14,7 @@ export const SettingNavigation = () => {
             </Button>
             <Button variant={"flat"}>
                 <Link href={"/search"} className={"flex gap-2"}>
-                    <IconDotsVertical stroke={1.5}/>
+                    <IconSettings stroke={1.5}/>
                     <span className="text-medium">Setting</span>
                 </Link>
             </Button>

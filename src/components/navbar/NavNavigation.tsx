@@ -2,7 +2,7 @@
 
 import {useEffect, useRef, useState} from "react";
 import Link from "next/link";
-import {TablerIcon, IconHome, IconUsers, IconBrandLine, IconMessage, IconDotsVertical, IconSearch} from "@tabler/icons-react";
+import {TablerIcon, IconHome, IconUsers, IconBrandLine, IconMessage, IconSettings, IconSearch} from "@tabler/icons-react";
 import {usePathname} from "next/navigation";
 import {cn} from "@/lib/utils";
 import {MotionDiv} from "@/components/motion";
@@ -42,7 +42,7 @@ const navigation: NavigationType[] = [
     {
         title: "Setting",
         href: "/setting",
-        icon: IconDotsVertical
+        icon: IconSettings
     },
 ];
 
