@@ -1,13 +1,26 @@
 "use client";
 
-import {FormLayout, Inputs} from "./FormLayout";
-import {useForm} from "react-hook-form";
-import {useMutation} from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import React, {useState} from "react";
+import {
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    useDisclosure,
+    InputOtp,
+    Button
+} from "@nextui-org/react";
 
-export const FormComponent = ({state} : { state: "login" | "register" }) => {
+import { FormLayout, Inputs } from "./FormLayout";
+
+export const FormComponent = ({ state }: { state: "login" | "register" }) => {
     const [isMainError, setIsMainError] = useState<string | null>(null);
+    const [otp, setOtp] = useState<string>("");
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const { register, handleSubmit, formState: { errors }, setError, clearErrors } = useForm<Inputs>();
     const onsubmit = (data: Inputs) => {
@@ -25,6 +38,7 @@ export const FormComponent = ({state} : { state: "login" | "register" }) => {
         },
         onSuccess: () => {
             // handle success
+            onOpen(); // open modal to verify otp
         },
         onError: (error) => {
             console.log("got to error", error);
@@ -69,6 +83,72 @@ export const FormComponent = ({state} : { state: "login" | "register" }) => {
                 path={state}
                 isPending={isPending}
             />
+            <Modal isOpen={isOpen} size={"sm"} onClose={onClose} backdrop="blur">
+                <ModalContent>
+                    {() => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">Verify otp</ModalHeader>
+                            <ModalBody>
+                                <OtpInputs otp={otp} setOtp={setOtp}/>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button onPress={onClose} className="btn btn-primary">Verify</Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+        </div>
+    );
+};
+
+const OtpInputs = ({
+    otp,
+    setOtp,
+    resendOtp
+} : {
+    otp?: string;
+    setOtp?: (otp: string) => void;
+    resendOtp?: () => void;
+}) => {
+
+    const [counter, setCounter] = useState<number | null>(5);
+
+    const setTimer = () => {
+        const interval = setInterval(() => {
+            setCounter((prev) => {
+                if (prev === 0 || prev === null) {
+                    clearInterval(interval);
+                    return null;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    };
+
+    useEffect(() => { 
+        setTimer();
+    }, []);
+
+    const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    };
+
+    return (
+        <div className="w-full flex flex-col items-center justify-center">
+            <InputOtp color={"default"} isInvalid={false} errorMessage={"Wrong otp"} variant={"underlined"} length={6} value={otp} onValueChange={setOtp} />
+            <div className="w-full">
+                <p className="text-sm">
+                    Don&apos;t receive OTP? {counter === null ? (
+                        <span className="text-primary-500 cursor-pointer hover:underline" onClick={() => {
+                            setCounter(5);
+                            setTimer();
+                            // resendOtp && resendOtp();
+                        }}>Resend</span>
+                    ) : formatTime(counter)}</p>
+            </div>
         </div>
     );
 };

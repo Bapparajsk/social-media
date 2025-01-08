@@ -19,7 +19,7 @@ export default function RootLayout({
       <body className={"max-w-[1200px] mx-auto"}>
       <Providers>
           <NavbarComponent/>
-          <main className={"px-2 py-4"}>
+          <main>
               {children}
           </main>
       </Providers>
