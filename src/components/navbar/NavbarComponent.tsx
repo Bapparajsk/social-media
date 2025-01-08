@@ -26,7 +26,7 @@ export const NavbarComponent = () => {
                     <SettingNavigation/>
                 </NavbarContent>
             </Navbar>
-            <UserData/>
+            {pathname === '/' && <UserData/>}
         </>
     );
 };

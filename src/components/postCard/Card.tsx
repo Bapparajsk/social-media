@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { IconDotsVertical } from "@tabler/icons-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { IconHeart, IconHeartFilled, IconMessage2, IconShare } from "@tabler/icons-react";
 import {
     Modal,
@@ -16,15 +17,20 @@ import CommandComponent from "./Command";
 import ShareComponent from "./Share";
 
 export const Card = ({
+    id,
     title,
     isOwner,
+    postImage,
 }: {
     title?: string
     isOwner?: boolean
+    id?: string | undefined
+    postImage?: string | undefined
 }) => {
 
     const [modalState, setModalState] = useState<"command" | "share">();
     const {isOpen, onOpen, onClose} = useDisclosure();
+    const router = useRouter();
 
     const handleModal = (state: "command" | "share") => {
         setModalState(state);
@@ -44,7 +50,11 @@ export const Card = ({
                             description="Software Engineer"
                             avatarProps={{
                                 src: "/newbg.jpeg",
-                                alt: "John Doe"
+                                alt: "John Doe",
+                                className: "border-[2px] border-green-400",
+                                onClick: () => {
+                                    if (id) router.push(`/profile?uid=${id}`);
+                                },
                             }}
                         />
                         {isOwner && <div className="h-full flex items-center justify-center">
@@ -63,7 +73,7 @@ export const Card = ({
                     <Image
                         width={800}
                         height={800}
-                        src="/newbg.jpeg"
+                        src={postImage || "/newbg.jpeg"}
                         alt="John Doe"
                         className="w-full h-full object-cover rounded-xl"
                     />

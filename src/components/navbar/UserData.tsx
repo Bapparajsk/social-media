@@ -4,6 +4,7 @@ import {useRouter} from "next/navigation";
 
 export const UserData = () => {
     const router = useRouter();
+
     return (
         <div className="w-full h-auto px-5 py-2 flex border-b border-gray-800">
             <div className="w-fit cursor-pointer">
