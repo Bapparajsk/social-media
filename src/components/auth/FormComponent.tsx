@@ -41,7 +41,6 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
             onOpen(); // open modal to verify otp
         },
         onError: (error) => {
-            console.log("got to error", error);
             clearErrors();
             setIsMainError(null);
             if (!axios.isAxiosError(error)) {
