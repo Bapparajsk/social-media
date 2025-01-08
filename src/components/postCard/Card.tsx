@@ -16,9 +16,11 @@ import CommandComponent from "./Command";
 import ShareComponent from "./Share";
 
 export const Card = ({
-    title
+    title,
+    isOwner,
 }: {
     title?: string
+    isOwner?: boolean
 }) => {
 
     const [modalState, setModalState] = useState<"command" | "share">();
@@ -45,11 +47,11 @@ export const Card = ({
                                 alt: "John Doe"
                             }}
                         />
-                        <div className="h-full flex items-center justify-center">
+                        {isOwner && <div className="h-full flex items-center justify-center">
                             <Button isIconOnly variant={"ghost"}>
                                 <IconDotsVertical stroke={1.5} />
                             </Button>
-                        </div>
+                        </div>}
                     </div>
                     <div className="w-full">
                         <pre className={"whitespace-pre-line text-sm lg:text-base"}>
