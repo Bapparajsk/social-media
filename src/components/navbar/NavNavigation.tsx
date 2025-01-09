@@ -1,16 +1,24 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
-import Link from "next/link";
-import {TablerIcon, IconHome, IconUsers, IconBrandLine, IconMessage, IconSettings, IconSearch} from "@tabler/icons-react";
-import {usePathname} from "next/navigation";
-import {cn} from "@/lib/utils";
-import {MotionDiv} from "@/components/motion";
+import { useEffect, useRef, useState } from "react";
+import { TablerIcon, IconHome, IconUsers, IconBrandLine, IconMessage, IconSettings, IconSearch } from "@tabler/icons-react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+    Modal,
+    ModalContent,
+    useDisclosure
+} from "@nextui-org/modal";
+
+import { MotionDiv } from "@/components/motion";
+import useScreenSize from "@/hooks/useScreenSize";
+import { ChatContainerModel } from "@/components/chat";
+
+import { cn } from "@/lib/utils";
 
 type NavigationType = {
     title: string;
     href: string;
-    icon: TablerIcon ;
+    icon: TablerIcon;
 }
 
 const navigation: NavigationType[] = [
@@ -53,6 +61,10 @@ export const NavNavigation = () => {
     const pathname = usePathname();
     const [barStyle, setBarStyle] = useState({ left: 0, width: 0 });
 
+    const {isOpen, onOpen, onClose} = useDisclosure();
+    const { push } = useRouter();
+    const { width } = useScreenSize();
+
     useEffect(() => {
         if (activeRef.current && ref.current && (pathname === "/" || pathname.startsWith("/friend") || pathname.startsWith("/chat") || pathname.startsWith("/notification"))) {
             const target = activeRef.current.getBoundingClientRect();
@@ -60,56 +72,80 @@ export const NavNavigation = () => {
             if (container) {
                 const left = target.left - container.left; // Relative left position
                 const width = target.width;
-                setBarStyle({left, width});
+                setBarStyle({ left, width });
             }
         } else {
-            setBarStyle(prev => ({...prev, width: 0}));
+            setBarStyle(prev => ({ ...prev, width: 0 }));
         }
     }, [pathname]);
 
+    const handleNavigation = (href: string) => {
+        if (href !== "/chat") {
+            push(href);
+            return;
+        }
+
+        if (width && width < 1024) {
+            push(href);
+        } else {
+            onOpen();
+        }
+    };
+
     return (
-        <div className={"w-auto"} ref={ref}>
-            <div  className={"w-auto flex gap-10 sm:gap-7 md:gap-10 lg:gap-14 relative"}>
-                {navigation.map((item, index) => (
-                    <div 
-                        ref={re => {
-                            if (pathname === "/" && item.href === "/") {
-                                activeRef.current = re;
-                            } else if (pathname.startsWith(item.href)) {
-                                activeRef.current = re;
-                            }
-                        }}  
-                        key={index}
-                        className={cn(
-                            "text-sm lg:text-medium",
-                            (item.title === "Search" || item.title === "Setting") && "block lg:hidden",
-                        )}
-                    >
-                        <Link href={item.href} className={cn(
-                            "flex cursor-pointer items-center gap-1 sm:gap-2 lg:gap-3",
-                            pathname === "/" && item.href === "/" ? "text-white" : item.href !== '/' && pathname.includes(item.href) ? "text-white" : "text-gray-400",
-                        )}>
-                            {item.icon && <item.icon className={"w-5 lg:w-7"}/>}
-                            <span className="hidden sm:block">{item.title}</span>
-                        </Link>
-                    </div>
-                ))}
-                <MotionDiv
-                    initial={{
-                        width: 0,
-                        backgroundColor: "white",
-                    }}
-                    animate={{
-                        left: barStyle.left,
-                        width: barStyle.width,
-                    }}
-                    transition={{
-                        left: { type: "spring", stiffness: 700, damping: 30 }, // Position animation
-                        width: { type: "spring", stiffness: 700, damping: 30 }, // Width animation
-                    }}
-                    className="absolute h-[2px] bg-white -bottom-3 rounded-md hidden lg:block"
-                />
+        <>
+            <div className={"w-auto"} ref={ref}>
+                <div className={"w-auto flex gap-10 sm:gap-7 md:gap-10 lg:gap-14 relative"}>
+                    {navigation.map((item, index) => (
+                        <div
+                            ref={re => {
+                                if (pathname === "/" && item.href === "/") {
+                                    activeRef.current = re;
+                                } else if (pathname.startsWith(item.href)) {
+                                    activeRef.current = re;
+                                }
+                            }}
+                            key={index}
+                            className={cn(
+                                "text-sm lg:text-medium",
+                                (item.title === "Search" || item.title === "Setting") && "block lg:hidden",
+                            )}
+                        >
+                            <div onClick={() => handleNavigation(item.href)} className={cn(
+                                "flex cursor-pointer items-center gap-1 sm:gap-2 lg:gap-3",
+                                pathname === "/" && item.href === "/" ?
+                                    "text-white" : item.href !== '/' &&
+                                        pathname.includes(item.href) ? "text-white" : "text-gray-400",
+                            )}>
+                                {item.icon && <item.icon className={"w-5 lg:w-7"} />}
+                                <span className="hidden sm:block">{item.title}</span>
+                            </div>
+                        </div>
+                    ))}
+                    <MotionDiv
+                        initial={{
+                            width: 0,
+                            backgroundColor: "white",
+                        }}
+                        animate={{
+                            left: barStyle.left,
+                            width: barStyle.width,
+                        }}
+                        transition={{
+                            left: { type: "spring", stiffness: 700, damping: 30 }, // Position animation
+                            width: { type: "spring", stiffness: 700, damping: 30 }, // Width animation
+                        }}
+                        className="absolute h-[2px] bg-white -bottom-3 rounded-md hidden lg:block"
+                    />
+                </div>
             </div>
-        </div>
+            <Modal backdrop="blur" isOpen={isOpen} size={"5xl"} onClose={onClose}>
+                <ModalContent>
+                    {() => (
+                        <ChatContainerModel/>
+                    )}
+                </ModalContent>
+            </Modal>
+        </>
     );
 };

@@ -19,7 +19,7 @@ export const NavbarComponent = () => {
             <Navbar shouldHideOnScroll className={"border-b-[1px] border-gray-600 justify-center "} classNames={{
                 wrapper: "justify-center lg:justify-between",
             }}>
-                <NavbarContent justify="center" className="dfjhg">
+                <NavbarContent justify="center">
                     <NavNavigation/>
                 </NavbarContent>
                 <NavbarContent justify="end" className="hidden lg:flex">

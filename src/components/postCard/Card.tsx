@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { IconDotsVertical } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { IconHeart, IconHeartFilled, IconMessage2, IconShare } from "@tabler/icons-react";
+import { IconHeart, IconHeartFilled, IconMessage2, IconShare, IconTrash } from "@tabler/icons-react";
 import {
     Modal,
     ModalContent,
@@ -59,7 +58,7 @@ export const Card = ({
                         />
                         {isOwner && <div className="h-full flex items-center justify-center">
                             <Button isIconOnly variant={"ghost"}>
-                                <IconDotsVertical stroke={1.5} />
+                                <IconTrash stroke={1.5} />
                             </Button>
                         </div>}
                     </div>
