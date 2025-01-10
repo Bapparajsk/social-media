@@ -34,7 +34,7 @@ const navigation: NavigationType[] = [
     },
     {
         title: "Chat",
-        href: "/chat",
+        href: "/chatlist",
         icon: IconBrandLine
     },
     {
@@ -66,7 +66,15 @@ export const NavNavigation = () => {
     const { width } = useScreenSize();
 
     useEffect(() => {
-        if (activeRef.current && ref.current && (pathname === "/" || pathname.startsWith("/friend") || pathname.startsWith("/chat") || pathname.startsWith("/notification"))) {
+        if (activeRef.current && 
+            ref.current && 
+            ((pathname === "/" ||
+                pathname.startsWith("/friend") || 
+                pathname.startsWith("/chatlist") || 
+                pathname.startsWith("/notification"
+
+            )) || width && width < 1024)
+        ) {
             const target = activeRef.current.getBoundingClientRect();
             const container = ref.current.getBoundingClientRect();
             if (container) {
@@ -77,10 +85,10 @@ export const NavNavigation = () => {
         } else {
             setBarStyle(prev => ({ ...prev, width: 0 }));
         }
-    }, [pathname]);
+    }, [pathname, width]);
 
     const handleNavigation = (href: string) => {
-        if (href !== "/chat") {
+        if (href !== "/chatlist") {
             push(href);
             return;
         }
@@ -135,7 +143,7 @@ export const NavNavigation = () => {
                             left: { type: "spring", stiffness: 700, damping: 30 }, // Position animation
                             width: { type: "spring", stiffness: 700, damping: 30 }, // Width animation
                         }}
-                        className="absolute h-[2px] bg-white -bottom-3 rounded-md hidden lg:block"
+                        className="absolute h-[2px] bg-white -bottom-3 rounded-md hidden sm:block"
                     />
                 </div>
             </div>

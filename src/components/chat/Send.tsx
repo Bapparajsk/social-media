@@ -20,7 +20,7 @@ const Send = (({ message, time, isMe, ref }: {
     isMe?: boolean
 }) => {
     return (
-        <div ref={ref} className={cn("w-full flex", isMe ? "justify-end" : "justify-start")}>
+        <div ref={ref} className={cn("w-full flex mb-3", isMe ? "justify-end" : "justify-start")}>
             <Button
                 color={isMe ? "success" : "secondary"}
                 variant={"flat"}

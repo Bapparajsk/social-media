@@ -6,10 +6,11 @@ import {NavNavigation} from "@/components/navbar/NavNavigation";
 import {SettingNavigation} from "@/components/navbar/SettingNavigation";
 import { UserData } from "./UserData";
 
-const authPaths = ["/login", "/register"];
+const authPaths = ["/login", "/register", "/chatlist/chat"];
 
 export const NavbarComponent = () => {
     const pathname = usePathname();
+    console.log(pathname);
     if (authPaths.includes(pathname)) {
         return null;
     }
