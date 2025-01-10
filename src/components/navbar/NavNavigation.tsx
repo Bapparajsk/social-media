@@ -12,6 +12,8 @@ import {
 import { MotionDiv } from "@/components/motion";
 import useScreenSize from "@/hooks/useScreenSize";
 import { ChatContainerModel } from "@/components/chat";
+import { SearchModel } from "@/components/search";
+import { SettingModel } from "@/components/setting";
 
 import { cn } from "@/lib/utils";
 
@@ -56,10 +58,12 @@ const navigation: NavigationType[] = [
 
 
 export const NavNavigation = () => {
+    const [barStyle, setBarStyle] = useState({ left: 0, width: 0 });
+    const [modalState, setModalState] = useState<"chat" | "search" | "setting">("chat");
     const ref = useRef<HTMLDivElement>(null);
     const activeRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
-    const [barStyle, setBarStyle] = useState({ left: 0, width: 0 });
+    
 
     const {isOpen, onOpen, onClose} = useDisclosure();
     const { push } = useRouter();
@@ -88,16 +92,25 @@ export const NavNavigation = () => {
     }, [pathname, width]);
 
     const handleNavigation = (href: string) => {
-        if (href !== "/chatlist") {
-            push(href);
+
+        if (href === "/search") {
+            setModalState("search");
+            onOpen();
+            return;
+        }
+        if (href === "/setting") {
+            setModalState("setting");
+            onOpen();
             return;
         }
 
-        if (width && width < 1024) {
-            push(href);
-        } else {
+        if (width && width > 1024 && href === "/chatlist") {
+            setModalState("chat");
             onOpen();
+            return;
         }
+
+        push(href);
     };
 
     return (
@@ -147,10 +160,11 @@ export const NavNavigation = () => {
                     />
                 </div>
             </div>
-            <Modal backdrop="blur" isOpen={isOpen} size={"5xl"} onClose={onClose}>
+            <Modal backdrop="blur" isOpen={isOpen} size={width && width < 1024 ? "full" : "5xl"} onClose={onClose}>
                 <ModalContent>
                     {() => (
-                        <ChatContainerModel/>
+                        modalState === "chat" ? <ChatContainerModel/> :
+                        modalState === "search" ? <SearchModel/> : <SettingModel/>
                     )}
                 </ModalContent>
             </Modal>
