@@ -70,10 +70,8 @@ export default function ProfileHeading() {
                                 <IconDotsVertical stroke={1.5} />
                             </Button>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
     );

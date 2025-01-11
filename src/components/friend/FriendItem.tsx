@@ -27,7 +27,6 @@ export default function FriendItem({
                     alt="Card example background"
                     className="z-0 w-full h-full scale-125 -translate-y-6 object-cover cursor-pointer"
                     src={profileImage || "/newbg.jpeg"}
-                    
                 />
             </div>
             <CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">

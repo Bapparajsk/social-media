@@ -38,7 +38,7 @@ export const Card = ({
 
     return (
         <>
-            <div className="w-full mx-auto rounded-md shadow-md overflow-hidden flex flex-col p-2 border-b-[2px] border-gray-200">
+            <div className="w-full mx-auto rounded-md shadow-md overflow-hidden flex flex-col p-2 mb-3 border-b-[2px] border-gray-200">
                 <div className="w-full h-auto flex flex-col">
                     <div className="w-full h-auto flex items-center justify-between gap-2 pb-2">
                         <User
@@ -57,7 +57,7 @@ export const Card = ({
                             }}
                         />
                         {isOwner && <div className="h-full flex items-center justify-center">
-                            <Button isIconOnly variant={"ghost"}>
+                            <Button isIconOnly variant={"ghost"} color="danger">
                                 <IconTrash stroke={1.5} />
                             </Button>
                         </div>}
