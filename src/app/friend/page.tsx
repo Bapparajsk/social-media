@@ -6,6 +6,7 @@ import { Tabs, Tab } from "@nextui-org/tabs";
 import { IconUserDown, IconUsers, IconUserShare } from "@tabler/icons-react";
 
 import { FriendList } from "@/components/friend";
+import { MotionDiv } from "@/components/motion";
 
 export default function Friend() {
     const [selectedTab, setSelectedTab] = useState<string>("suggestions");
@@ -14,17 +15,23 @@ export default function Friend() {
         <div className={"w-full h-full px-2"}>
             <div className="w-full py-2 flex flex-col md:flex-row gap-2 items-center justify-between border-b border-gray-200 dark:border-gray-800">
                 <div className="w-full flex items-center justify-between">
-                    <div className="px-3">
+                    <MotionDiv
+                        initial={{ x: -10, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                        className="px-3"
+                    >
                         <h3 className="font-bold text-xl">Friends</h3>
-                    </div>
+                    </MotionDiv>
                     <div className="flex justify-center flex-grow">
                         <Tabs
                             onSelectionChange={e => {
+                                console.log(e);
                                 setSelectedTab(e as string);
                             }}
                             defaultSelectedKey={"suggestions"}
                             aria-label="Options"
-                            color="success"
+                            color={selectedTab === "friends" ? "primary" : selectedTab === "friend-request" ? "warning" : "success"}
                             variant="underlined"
                         >
                             <Tab
