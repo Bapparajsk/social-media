@@ -160,7 +160,7 @@ export const NavNavigation = () => {
                     />
                 </div>
             </div>
-            <Modal backdrop="blur" isOpen={isOpen} size={width && width < 1024 ? "full" : "5xl"} onClose={onClose}>
+            <Modal backdrop="blur" isOpen={isOpen} size={modalState === "setting" ? "xl" : width && width < 1024 ? "full" : "5xl"} onClose={onClose}>
                 <ModalContent>
                     {() => (
                         modalState === "chat" ? <ChatContainerModel/> :
