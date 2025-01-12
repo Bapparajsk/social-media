@@ -1,7 +1,8 @@
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 const MotionDiv = motion.create("div");
 
 export {
-    MotionDiv
+    AnimatePresence,
+    MotionDiv,
 };

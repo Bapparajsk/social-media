@@ -11,7 +11,7 @@ import { SearchModel } from "../search";
 import { SettingModel } from "../setting";
 
 export const SettingNavigation = () => {
-    const [modalState, setModalState] = useState<"search" | "setting">("search");
+    const [modalState, setModalState] = useState<"search" | "setting">("setting");
 
     const pathName = usePathname();
     const { isOpen, onOpen, onClose } = useDisclosure();
