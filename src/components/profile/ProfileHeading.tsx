@@ -1,11 +1,24 @@
 "use client";
 
 import Image from 'next/image';
-import { Avatar, AvatarGroup } from "@nextui-org/avatar";
-import { Button } from "@nextui-org/button";
+import {
+    Avatar,
+    AvatarGroup,
+    Button,
+    Modal,
+    ModalContent,
+    useDisclosure
+} from "@nextui-org/react";
+import { useRouter } from 'next/navigation';
+
 import { IconPlus, IconPencil, IconDotsVertical } from "@tabler/icons-react";
+import { SettingModel } from '../setting';
 
 export default function ProfileHeading() {
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { push } = useRouter();
+
     return (
         <div className="w-full h-auto border-b-1 border-neutral-200 dark:border-neutral-700">
             <div className='w-full h-auto flex flex-col'>
@@ -39,7 +52,15 @@ export default function ProfileHeading() {
                                 isBordered
                                 max={5}
                                 renderCount={(count) => (
-                                    <p className="text-small text-foreground font-medium ms-2">+{count} others</p>
+                                    <Button 
+                                        size='sm' 
+                                        variant='faded' 
+                                        color='primary' 
+                                        className='ml-2'
+                                        onPress={() => {push("/friend?env=friends");}}
+                                    >
+                                        +{count} others
+                                    </Button>
                                 )}
                                 total={1}
                             >
@@ -55,7 +76,7 @@ export default function ProfileHeading() {
                     <div className='w-full md:w-auto flex gap-2'>
                         <div className='flex-grow sm:flex-grow-0'>
                             <Button fullWidth variant={"shadow"} color={"primary"}>
-                                <IconPlus stroke={1.5} /> 
+                                <IconPlus stroke={1.5} />
                                 <span className='md:hidden lg:block'>Create new Post</span>
                             </Button>
                         </div>
@@ -66,13 +87,18 @@ export default function ProfileHeading() {
                             </Button>
                         </div>
                         <div >
-                            <Button isIconOnly>
+                            <Button onPress={onOpen} isIconOnly>
                                 <IconDotsVertical stroke={1.5} />
                             </Button>
                         </div>
                     </div>
                 </div>
             </div>
+            <Modal backdrop="blur" isOpen={isOpen} size={"lg"} onClose={onClose}>
+                <ModalContent>
+                    {() => <SettingModel />}
+                </ModalContent>
+            </Modal>
         </div>
     );
 }

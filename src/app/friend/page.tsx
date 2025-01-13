@@ -1,15 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import {Key} from '@react-types/shared';
 import { Input } from "@nextui-org/react";
 import { Tabs, Tab } from "@nextui-org/tabs";
 import { IconUserDown, IconUsers, IconUserShare } from "@tabler/icons-react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 import { FriendList } from "@/components/friend";
 import { MotionDiv } from "@/components/motion";
 
+const envs = [
+    "friends",
+    "friend-request",
+    "suggestions"
+];
+
 export default function Friend() {
-    const [selectedTab, setSelectedTab] = useState<string>("suggestions");
+    const params = useSearchParams();
+    const env = params.get("env");
+    const { push } = useRouter();
+
+    if(env != null && !envs.includes(env)) {
+        return (
+            <div className="w-full h-[500px] flex items-center justify-center">
+                <h3>invalid &apos;env&apos;</h3>
+            </div>
+        );
+    }
 
     return (
         <div className={"w-full h-full px-2"}>
@@ -25,13 +42,12 @@ export default function Friend() {
                     </MotionDiv>
                     <div className="flex justify-center flex-grow">
                         <Tabs
-                            onSelectionChange={e => {
-                                console.log(e);
-                                setSelectedTab(e as string);
+                            onSelectionChange={e => {                                
+                                push(`/friend?env=${e}`);
                             }}
-                            defaultSelectedKey={"suggestions"}
+                            defaultSelectedKey={env === null ? "suggestions" : env as Key}
                             aria-label="Options"
-                            color={selectedTab === "friends" ? "primary" : selectedTab === "friend-request" ? "warning" : "success"}
+                            color={env === "friends" ? "primary" : env === "friend-request" ? "warning" : "success"}
                             variant="underlined"
                         >
                             <Tab

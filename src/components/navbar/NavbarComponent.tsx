@@ -10,7 +10,6 @@ const authPaths = ["/login", "/register", "/chatlist/chat"];
 
 export const NavbarComponent = () => {
     const pathname = usePathname();
-    console.log(pathname);
     if (authPaths.includes(pathname)) {
         return null;
     }

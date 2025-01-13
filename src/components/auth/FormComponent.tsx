@@ -60,8 +60,8 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
                 setIsMainError("An error occurred, please try again later.");
                 return;
             }
-
-            setIsMainError("An error occurred, please try again later.");
+            
+            setIsMainError(error.message || "An error occurred, please try again later.");
         }
     });
 
@@ -88,7 +88,7 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
                         <>
                             <ModalHeader className="flex flex-col gap-1">Verify otp</ModalHeader>
                             <ModalBody>
-                                <OtpInputs otp={otp} setOtp={setOtp}/>
+                                <OtpInputs otp={otp} setOtp={setOtp} />
                             </ModalBody>
                             <ModalFooter>
                                 <Button onPress={onClose} className="btn btn-primary">Verify</Button>
@@ -105,7 +105,7 @@ const OtpInputs = ({
     otp,
     setOtp,
     resendOtp
-} : {
+}: {
     otp?: string;
     setOtp?: (otp: string) => void;
     resendOtp?: () => void;
@@ -125,7 +125,7 @@ const OtpInputs = ({
         }, 1000);
     };
 
-    useEffect(() => { 
+    useEffect(() => {
         setTimer();
     }, []);
 
