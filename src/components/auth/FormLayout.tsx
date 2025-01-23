@@ -89,7 +89,10 @@ export function FormLayout({
 
             <div className={"flex flex-col gap-3"}>
                 <Button disabled={isPending} key={"submit"} className={"justify-center"} type={"submit"} >
-                    <span className="text-neutral-700 dark:text-neutral-300 text-medium font-bold">Sign up &rarr;</span>
+                    <span className="text-neutral-700 dark:text-neutral-300 text-medium font-bold">
+                        {path === "register" ? "Create Account" : "Sign in"}
+                    </span>
+                    <IconLogin2 className="h-4 w-4 text-neutral-800 dark:text-neutral-300 font-bold"/>
                 </Button>
 
                 <Button
@@ -98,9 +101,8 @@ export function FormLayout({
                     className={"justify-center"}
                     onClick={() => router.push(path === "register" ? "/login" : "/register")}
                 >
-                    <IconLogin2 className="h-4 w-4 text-neutral-800 dark:text-neutral-300 font-bold"/>
                     <span className="text-neutral-700 dark:text-neutral-300 text-medium font-bold">
-                        Sign in
+                        {path === "register" ? "Login" : "Create Account"}   &rarr;
                     </span>
                 </Button>
             </div>

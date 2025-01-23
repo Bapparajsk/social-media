@@ -17,12 +17,12 @@ export default function RootLayout({
   return (
     <html lang="en" className='dark'>
       <body className={"max-w-[1200px] mx-auto"}>
-      <Providers>
-          <NavbarComponent/>
-          <main>
-              {children}
-          </main>
-      </Providers>
+        <Providers>
+            <NavbarComponent/>
+            <main>
+                {children}
+            </main>
+        </Providers>
       </body>
     </html>
   );
