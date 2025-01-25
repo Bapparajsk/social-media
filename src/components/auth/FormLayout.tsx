@@ -37,6 +37,7 @@ export function FormLayout({
             {path === "register" && <LabelInputContainer key={"name"} className="mb-4 justify-start">
                 <Label htmlFor="name">Full Name</Label>
                 <Input
+                    key={"name"}
                     id="name"
                     placeholder="bappa"
                     type="text"
@@ -57,6 +58,7 @@ export function FormLayout({
             <LabelInputContainer key={"email"} className="mb-4 justify-start">
                 <Label htmlFor="email">Email Address</Label>
                 <Input
+                    key={"email"}
                     id="email"
                     placeholder="bappa@code.com"
                     type="email"
@@ -74,17 +76,19 @@ export function FormLayout({
             <LabelInputContainer key={"password"} className="mb-4">
                 <Label htmlFor="password">Password</Label>
                 <Input
+                    key={"password"}
                     id="password"
                     placeholder="••••••••"
                     type="password"
                     {...register("password", {required: "This field is required"})}
                     isError={errors.password && true}
-                    {...errors.password && (
+                    
+                />
+                {errors.password && (
                         <div className="text-red-500 pl-2 dark:text-red-400 text-sm font-medium">
                             {errors.password.message}
                         </div>
                     )}
-                />
             </LabelInputContainer>
 
             <div className={"flex flex-col gap-3"}>

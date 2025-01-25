@@ -6,7 +6,8 @@ const Server = axios.create({
     baseURL: serverURL,
     headers: {
         "Content-Type": "application/json",
-    }
+    },
+    withCredentials: true,
 });
 
 export default Server;

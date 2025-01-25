@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -16,29 +17,49 @@ import {
 } from "@nextui-org/react";
 
 import { FormLayout, Inputs } from "./FormLayout";
+import { login, verifyLoginOtp } from "@/lib/auth";
+import { useUser } from "@/contexts/user.context";
 
 export const FormComponent = ({ state }: { state: "login" | "register" }) => {
     const [isMainError, setIsMainError] = useState<string | null>(null);
     const [otp, setOtp] = useState<string>("");
+    const [tempToken, setTempToken] = useState<string | null>(null);
+    const [verifyOtpState, setVerifyOtpState] = useState<boolean>(false);
+
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const router = useRouter();
+    const { setUser } = useUser();
 
     const { register, handleSubmit, formState: { errors }, setError, clearErrors } = useForm<Inputs>();
     const onsubmit = (data: Inputs) => {
         mutate(data);
     };
 
+    // useEffect(() => {
+
+    //     if (user !== null) {
+    //         router.push("/");
+    //     }
+
+    // },[user]);
+
     const { mutate, isPending } = useMutation({
         mutationKey: ["login"],
         mutationFn: async (data: Inputs) => {
             if (state === "login") {
-                console.log(data); // handle login
+                const res = await login(data.email, data.password);
+                return res;
             } else {
                 console.log(data); // handle register
             }
         },
-        onSuccess: () => {
-            // handle success
-            onOpen(); // open modal to verify otp
+        onSuccess: (data) => {
+            if (data?.message === "Two Factor Authentication is enabled") {
+                setTempToken(data.tempToken);
+                onOpen(); // open modal to verify otp
+                return;
+            }
+            router.push("/");
         },
         onError: (error) => {
             clearErrors();
@@ -49,6 +70,18 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
             }
 
             const { response } = error;
+
+            if (response?.status === 404) {
+                setError("email", { message: "Email not found" });
+                return;
+            }
+
+            if (response?.status === 400) {
+                setIsMainError("Invalid credentials");
+                setError("email", { message: "Email is incorrect" });
+                setError("password", { message: "Password is incorrect" });
+                return;
+            }
 
             if (response?.status === 401) {
                 setError("email", { message: "Invalid email or password" });
@@ -64,6 +97,24 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
             setIsMainError(error.message || "An error occurred, please try again later.");
         }
     });
+
+    const verifyOtp = async () => {
+        setVerifyOtpState(true);
+        try {
+            if (state === "login") {
+                if (!tempToken) {
+                    return;
+                }
+                const res = await verifyLoginOtp(tempToken, otp);
+                setUser(res.user);
+                router.push("/");
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setVerifyOtpState(false);
+        }
+    };
 
     return (
         <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
@@ -91,7 +142,7 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
                                 <OtpInputs otp={otp} setOtp={setOtp} />
                             </ModalBody>
                             <ModalFooter>
-                                <Button onPress={onClose} className="btn btn-primary">Verify</Button>
+                                <Button disabled={verifyOtpState} onPress={verifyOtp} className="btn btn-primary">Verify</Button>
                             </ModalFooter>
                         </>
                     )}
@@ -144,7 +195,9 @@ const OtpInputs = ({
                         <span className="text-primary-500 cursor-pointer hover:underline" onClick={() => {
                             setCounter(5);
                             setTimer();
-                            // resendOtp && resendOtp();
+                            if (resendOtp) { // condition is not defined
+                                resendOtp();
+                            }
                         }}>Resend</span>
                     ) : formatTime(counter)}</p>
             </div>
