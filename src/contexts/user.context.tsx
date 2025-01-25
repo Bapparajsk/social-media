@@ -1,14 +1,6 @@
 import { createContext, useState, useContext, ReactNode } from 'react';
+import { User, UserContextProps } from "./type.user.context";
 
-interface User {
-    id: string;
-    name: string;
-}
-
-interface UserContextProps {
-    user: User | null;
-    setUser: (user: User | null) => void;
-}
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
