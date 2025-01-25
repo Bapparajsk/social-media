@@ -2,10 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  reactStrictMode: false,
-  experimental: {
-    dynamicIO: true,
-  }
+  reactStrictMode: true,
 };
 
 export default nextConfig;

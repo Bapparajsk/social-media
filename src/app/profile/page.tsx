@@ -1,10 +1,15 @@
-import { ProfileHeading, UserPost } from "@/components/profile";
+import { FetchData } from "@/components/profile";
+import { ProfileProvider } from "@/contexts/profile.context";
 
 export default function Profile() {
+
+
+
     return (
-        <div className="p-2">
-            <ProfileHeading />
-            <UserPost />
-        </div>
+        <ProfileProvider>
+            <div className="p-2">
+                <FetchData />
+            </div>
+        </ProfileProvider>
     );
 }

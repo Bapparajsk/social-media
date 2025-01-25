@@ -1,4 +1,5 @@
 import ProfileHeading from './ProfileHeading';
 import UserPost from './UserPost';
+import FetchData from './fetch';
 
-export { ProfileHeading, UserPost };
+export { ProfileHeading, UserPost, FetchData };
