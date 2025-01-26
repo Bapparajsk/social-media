@@ -1,9 +1,8 @@
-"use client";
-
 import { MotionDiv } from "@/components/motion";
 import { NotificationContainer } from "@/components/notification";
 
 export default function Notification() {
+
     return (
         <div className={"w-full px-3 pb-5"}>
             <div className="w-full py-2">
