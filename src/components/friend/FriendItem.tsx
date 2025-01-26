@@ -6,18 +6,20 @@ export default function FriendItem({
     id,
     name,
     title,
-    profileImage
+    profileImage,
+    ref,
 }: {
     id?: string | undefined;
     name?: string | undefined;
     title?: string | undefined;
     profileImage?: string | undefined;
+    ref?: any;
 }) {
 
     const { push } = useRouter();
 
     return (
-        <Card isFooterBlurred className="w-72 h-72">
+        <Card ref={ref} isFooterBlurred className="w-72 h-72">
             <div 
                 className="w-full h-full"
                 onClick={() => id && push(`/profile?uid=${id}`)}

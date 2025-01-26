@@ -47,13 +47,13 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
         },
         onSuccess: (data) => {
             if (data.fnMessage === "register") {
-                // onOpen();
+                setOtpState(prev => ({...prev, isOpen: true}));
                 return;
             }
 
             if (data?.message === "Two Factor Authentication is enabled") {
                 setTempToken(data.tempToken);
-                // onOpen(); // open modal to verify otp
+                setOtpState(prev => ({...prev, isOpen: true}));
                 return;
             }
             router.push("/");

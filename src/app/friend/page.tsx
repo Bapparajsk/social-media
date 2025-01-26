@@ -85,7 +85,7 @@ export default function Friend() {
                 </div>
             </div>
             <div className="w-full h-auto border-b border-gray-200 dark:border-gray-800">
-                <FriendList />
+                <FriendList env={env}/>
             </div>
         </div>
     );
