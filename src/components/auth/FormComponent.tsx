@@ -1,118 +1,94 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    useDisclosure,
-    InputOtp,
-    Button
-} from "@nextui-org/react";
 
 import { FormLayout, Inputs } from "./FormLayout";
-import { login, verifyLoginOtp } from "@/lib/auth";
-import { useUser } from "@/contexts/user.context";
+import OtpModal from "@/components/ui/otpModal";
+
+import { login, verifyLoginOtp, registerServer, loginErrorSet, registerErrorSet, verifyRegisterOtp } from "@/lib/auth";
+import { isAxiosError } from "axios";
+
+
+
 
 export const FormComponent = ({ state }: { state: "login" | "register" }) => {
     const [isMainError, setIsMainError] = useState<string | null>(null);
-    const [otp, setOtp] = useState<string>("");
     const [tempToken, setTempToken] = useState<string | null>(null);
-    const [verifyOtpState, setVerifyOtpState] = useState<boolean>(false);
 
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [otpState, setOtpState] = useState({
+        isOpen: false,
+        isError: false,
+        errorMessage: "",
+    });
+    
     const router = useRouter();
-    const { setUser } = useUser();
 
     const { register, handleSubmit, formState: { errors }, setError, clearErrors } = useForm<Inputs>();
     const onsubmit = (data: Inputs) => {
         mutate(data);
     };
 
-    // useEffect(() => {
-
-    //     if (user !== null) {
-    //         router.push("/");
-    //     }
-
-    // },[user]);
-
     const { mutate, isPending } = useMutation({
         mutationKey: ["login"],
         mutationFn: async (data: Inputs) => {
             if (state === "login") {
                 const res = await login(data.email, data.password);
-                return res;
+                return {fnMessage: "login", ...res};
             } else {
-                console.log(data); // handle register
+                if (data.name === undefined) {
+                    throw new Error("Name is required");
+                }
+                const res = await registerServer(data.name, data.email, data.password);
+                return {fnMessage: "register", ...res};
             }
         },
         onSuccess: (data) => {
+            if (data.fnMessage === "register") {
+                // onOpen();
+                return;
+            }
+
             if (data?.message === "Two Factor Authentication is enabled") {
                 setTempToken(data.tempToken);
-                onOpen(); // open modal to verify otp
+                // onOpen(); // open modal to verify otp
                 return;
             }
             router.push("/");
         },
         onError: (error) => {
-            clearErrors();
-            setIsMainError(null);
-            if (!axios.isAxiosError(error)) {
-                setIsMainError("An error occurred, please try again later.");
+            if (state === "login") {
+                loginErrorSet(error, { clearErrors, setIsMainError, setError });
                 return;
             }
 
-            const { response } = error;
-
-            if (response?.status === 404) {
-                setError("email", { message: "Email not found" });
-                return;
-            }
-
-            if (response?.status === 400) {
-                setIsMainError("Invalid credentials");
-                setError("email", { message: "Email is incorrect" });
-                setError("password", { message: "Password is incorrect" });
-                return;
-            }
-
-            if (response?.status === 401) {
-                setError("email", { message: "Invalid email or password" });
-                setError("password", { message: "Invalid email or password" });
-                return;
-            }
-
-            if (response?.status === 500) {
-                setIsMainError("An error occurred, please try again later.");
-                return;
-            }
-            
-            setIsMainError(error.message || "An error occurred, please try again later.");
+            registerErrorSet(error, { clearErrors, setIsMainError, setError });
         }
     });
 
-    const verifyOtp = async () => {
-        setVerifyOtpState(true);
+    const verifyOtp = async (otp: string) => {
         try {
             if (state === "login") {
                 if (!tempToken) {
                     return;
                 }
-                const res = await verifyLoginOtp(tempToken, otp);
-                setUser(res.user);
-                router.push("/");
+                await verifyLoginOtp(tempToken, otp);
+            } else {
+                await verifyRegisterOtp(otp);
             }
+            router.push("/");
+            
         } catch (error) {
-            console.log(error);
-        } finally {
-            setVerifyOtpState(false);
+
+            if(!isAxiosError(error)) {
+                setOtpState(prev => ({...prev, isError: true, errorMessage: "An error occurred, please try again later."}));
+                return;
+            }
+            
+            const { response } = error;
+            setOtpState(prev => ({...prev, isError: true, errorMessage: response?.data.message || "An error occurred, please try again later."}));
         }
     };
 
@@ -126,6 +102,11 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
                     {isMainError}
                 </div>
             )}
+            <button type="button" onClick={() => {
+                setOtpState(prev => ({...prev, isOpen: true}));
+            }}>Go back
+
+            </button>
             <FormLayout
                 register={register}
                 errors={errors}
@@ -133,74 +114,21 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
                 path={state}
                 isPending={isPending}
             />
-            <Modal isOpen={isOpen} size={"sm"} onClose={onClose} backdrop="blur">
-                <ModalContent>
-                    {() => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1">Verify otp</ModalHeader>
-                            <ModalBody>
-                                <OtpInputs otp={otp} setOtp={setOtp} />
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button disabled={verifyOtpState} onPress={verifyOtp} className="btn btn-primary">Verify</Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
-        </div>
-    );
-};
-
-const OtpInputs = ({
-    otp,
-    setOtp,
-    resendOtp
-}: {
-    otp?: string;
-    setOtp?: (otp: string) => void;
-    resendOtp?: () => void;
-}) => {
-
-    const [counter, setCounter] = useState<number | null>(5);
-
-    const setTimer = () => {
-        const interval = setInterval(() => {
-            setCounter((prev) => {
-                if (prev === 0 || prev === null) {
-                    clearInterval(interval);
-                    return null;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-    };
-
-    useEffect(() => {
-        setTimer();
-    }, []);
-
-    const formatTime = (seconds: number) => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-    };
-
-    return (
-        <div className="w-full flex flex-col items-center justify-center">
-            <InputOtp color={"default"} isInvalid={false} errorMessage={"Wrong otp"} variant={"underlined"} length={6} value={otp} onValueChange={setOtp} />
-            <div className="w-full">
-                <p className="text-sm">
-                    Don&apos;t receive OTP? {counter === null ? (
-                        <span className="text-primary-500 cursor-pointer hover:underline" onClick={() => {
-                            setCounter(5);
-                            setTimer();
-                            if (resendOtp) { // condition is not defined
-                                resendOtp();
-                            }
-                        }}>Resend</span>
-                    ) : formatTime(counter)}</p>
-            </div>
+            <OtpModal
+                isOpen={otpState.isOpen}
+                setIsOpen={() => {
+                    setOtpState(prev => ({...prev, isOpen: !prev.isOpen}));
+                    if (state === "register") {
+                        router.replace("/"); // redirect to home page
+                    }
+                }}
+                onSubmit={verifyOtp}
+                isError={otpState.isError}
+                errorMessage={otpState.errorMessage}
+                resendOtp={() => {
+                    // if
+                }}
+            />
         </div>
     );
 };
