@@ -4,30 +4,23 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useIntersection } from '@mantine/hooks';
 
 import FriendItem from "./FriendItem";
-import Server from "@/lib/axios";
+import { getFriendList } from "@/lib/friend";
 
 
-const fetchFriends = async ({ pageParam = 0 }) => {
-    const res = await Server.get(`/api/friend/suggestions`);
-    console.log(res.data.suggestions);
+export default function FriendList({env = "friends"} : {env: "friends" | "friend-requests" | "suggestions"}) {
+    env = env || "suggestions";
     
-    return res.data;
-};
-
-
-export default function FriendList({env} : {env: string | null}) {
-
     const {
         data,
         fetchNextPage,
+        isFetchingNextPage,
       } = useInfiniteQuery({
-        queryKey: ['projects'],
-        queryFn: fetchFriends,
-        getNextPageParam: (lastPage) => lastPage.page,
+        queryKey: ['projects', env],
+        queryFn: async ({ pageParam = 0 }) => getFriendList(pageParam + 1, env),
+        getNextPageParam: (lastPage) => lastPage?.page,
         initialPageParam: 0,
         retry: 1,
-        gcTime: 1000 * 60 * 60 * 24, // 24 hours
-        
+        gcTime: 1000 * 60 * 60 * 24, // 24 hour
     });
 
     const { ref, entry } = useIntersection({
@@ -36,24 +29,22 @@ export default function FriendList({env} : {env: string | null}) {
     });
 
     useEffect(() => {
-        if (entry?.isIntersecting) {  
+        if (entry?.isIntersecting && !isFetchingNextPage) {  
             fetchNextPage();
         }
-    }, [entry]);
+    }, [entry, isFetchingNextPage]);
 
-    const friends = data?.pages.at(-1).suggestions;
+    const friends = data?.pages.at(-1);
 
     return (
         <div className="w-full flex gap-2 flex-wrap p-3 justify-center">
-            {friends?.map((friend, idx) => {
+            {friends?.map((friend: any, idx: number) => {
                 
                 if (idx === friends.length - 1) {
                     return <FriendItem key={idx} id={friend._id} name={friend.name} ref={ref} />;
                 }
                 return <FriendItem key={idx} id={friend._id} name={friend.name}/>;
-                // return <FriendItem key={friend.id} id={friend.id} />
             })}
-            {/* <FriendItem id="1039"/> */}
         </div>
     );
 }

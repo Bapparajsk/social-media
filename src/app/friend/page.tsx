@@ -11,13 +11,13 @@ import { MotionDiv } from "@/components/motion";
 
 const envs = [
     "friends",
-    "friend-request",
+    "friend-requests",
     "suggestions"
 ];
 
 export default function Friend() {
     const params = useSearchParams();
-    const env = params.get("env");
+    const env = params.get("env") as "friends" | "friend-requests" | "suggestions";
     const { push } = useRouter();
 
     if(env != null && !envs.includes(env)) {
@@ -47,7 +47,7 @@ export default function Friend() {
                             }}
                             defaultSelectedKey={env === null ? "suggestions" : env as Key}
                             aria-label="Options"
-                            color={env === "friends" ? "primary" : env === "friend-request" ? "warning" : "success"}
+                            color={env === "friends" ? "primary" : env === "friend-requests" ? "warning" : "success"}
                             variant="underlined"
                         >
                             <Tab
@@ -60,7 +60,7 @@ export default function Friend() {
                                 }
                             />
                             <Tab
-                                key="friend-request"
+                                key="friend-requests"
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <IconUserDown stroke={1.5} />

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const serverURL = process.env.URL || "http://127.0.0.1:8000";
+const serverURL = process.env.URL || "http://192.168.0.173:8000";
 
 const Server = axios.create({
     baseURL: serverURL,
