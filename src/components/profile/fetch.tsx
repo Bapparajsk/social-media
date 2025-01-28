@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 
@@ -12,27 +11,20 @@ import Server from "@/lib/axios";
 
 
 export default function FetchData() {
-
-    const { profile, setProfile } = useProfile();
     const params = useSearchParams();
+    const { profile, setProfile } = useProfile();
 
 
-    const { data, isError } = useQuery({
+    const { data, isError, isFetching } = useQuery({
         queryKey: ['profile', params.get('id')],
         queryFn: async () => {
             const response = await Server.get(`/api/user/${params.get('uid')}`);
-            console.log(response.data.user);
-            
+            setProfile(response.data.user);
             return response.data.user;
         },
         enabled: profile === null || profile.userId !== params.get('uid'),
     });
 
-    useEffect(() => {
-        if (data) {
-            setProfile(data);
-        }
-    }, [data, setProfile]);
 
     if (isError) {
         return <Redirect to="/login" />;;
@@ -44,7 +36,7 @@ export default function FetchData() {
 
     return (
         <>
-            <ProfileHeading  />
+            <ProfileHeading  profile={data} isFetching={isFetching}/>
             <UserPost />
         </>
     );
