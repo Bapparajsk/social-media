@@ -6,9 +6,10 @@ import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useMotionValue } from "@/components/motion";
 import { useUser } from "@/contexts/user.context";
+import { useNotification } from "@/contexts/notification.context";
 import { ProgressBar } from "../ui/progress";
 import { createUrl, createPost, uploadFile } from "@/lib/post";
-
+import { isAxiosError } from "axios";
 
 export default function Component() {
 
@@ -19,6 +20,7 @@ export default function Component() {
     const progress = useMotionValue(0);
 
     const { user } = useUser();
+    const { show } = useNotification();
 
     const { mutate, isPending } = useMutation({
         mutationKey: ["upload"],
@@ -27,7 +29,7 @@ export default function Component() {
                 throw new Error("No image found");
             }
 
-            const containerX = ref.current?.getBoundingClientRect().x || 0;
+            const containerX = ref.current?.clientWidth || 0;
             progress.set(containerX * .10);
 
             const { url, key } = await createUrl(image?.name || user?.name || "post");
@@ -44,9 +46,21 @@ export default function Component() {
             setImage(null);
             setDescription("");
             progress.set(0);
+            show("Post uploaded successfully", "success");
         },
         onError: (error) => {
-            console.error(error);
+            setStage(1);
+            setImage(null);
+            setDescription("");
+            progress.set(0);
+
+            if(!isAxiosError(error)) {
+                show("An error occurred", "error");
+                return;
+            }
+
+            const { response } = error;
+            show(response?.data?.message || "An error occurred", "error");
         }
     });
 
@@ -83,7 +97,7 @@ export default function Component() {
                     </div>
                     <ProgressBar progress={progress} ref={ref}/>
                     <div className="flex justify-center mt-4 gap-2">
-                        <Button
+                        {!isPending && <Button
                             onPress={() => setStage(1)}
                             size="sm"
                             variant="faded"
@@ -91,7 +105,7 @@ export default function Component() {
                             isLoading={isPending}
                         >
                             Prev
-                        </Button>
+                        </Button>}
                         <Button
                             onPress={upload}
                             size="sm"
@@ -99,7 +113,7 @@ export default function Component() {
                             color="primary"
                             isLoading={isPending}
                         >
-                            Upload
+                            {!isPending && "Upload"}
                         </Button>
                     </div>
                 </div>
