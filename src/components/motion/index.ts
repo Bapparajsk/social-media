@@ -1,11 +1,11 @@
 "use client";
 
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useSpring, useMotionValue, MotionValue } from "motion/react";
 
 const MotionDiv = motion.create("div");
 const MotionP = motion.create("p");
 
 export {
-    AnimatePresence,
+    AnimatePresence, useSpring, useMotionValue, MotionValue,
     MotionDiv, MotionP
 };

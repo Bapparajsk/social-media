@@ -94,7 +94,7 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
 
     return (
         <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
-            <h2 className="font-bold text-3xl text-neutral-800 dark:text-neutral-200">
+            <h2 className="font-bold text-3xl cursor-pointer text-neutral-800 dark:text-neutral-200">
                 {state === "login" ? "Welcome Back 👋" : "Create an account 🚀"}
             </h2>
             {isMainError && (
@@ -102,11 +102,6 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
                     {isMainError}
                 </div>
             )}
-            <button type="button" onClick={() => {
-                setOtpState(prev => ({...prev, isOpen: true}));
-            }}>Go back
-
-            </button>
             <FormLayout
                 register={register}
                 errors={errors}
