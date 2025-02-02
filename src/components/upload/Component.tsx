@@ -20,13 +20,21 @@ export default function Component() {
     const progress = useMotionValue(0);
 
     const { user } = useUser();
-    const { show } = useNotification();
+    const { show: showError } = useNotification();
 
     const { mutate, isPending } = useMutation({
         mutationKey: ["upload"],
         mutationFn: async () => {
             if (!image) {
                 throw new Error("No image found");
+            }
+
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            if (user.verifyEmail === false) {
+                throw new Error("Please verify your email to upload a post");
             }
 
             const containerX = ref.current?.clientWidth || 0;
@@ -46,7 +54,7 @@ export default function Component() {
             setImage(null);
             setDescription("");
             progress.set(0);
-            show("Post uploaded successfully", "success");
+            showError("Post uploaded successfully", "success");
         },
         onError: (error) => {
             setStage(1);
@@ -55,12 +63,12 @@ export default function Component() {
             progress.set(0);
 
             if(!isAxiosError(error)) {
-                show("An error occurred", "error");
+                showError("An error occurred", "error");
                 return;
             }
 
             const { response } = error;
-            show(response?.data?.message || "An error occurred", "error");
+            showError(response?.data?.message || "An error occurred", "error");
         }
     });
 

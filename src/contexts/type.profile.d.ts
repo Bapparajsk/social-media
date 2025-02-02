@@ -6,6 +6,7 @@ export interface Profile {
     coverPicture: string | null,
     friends: Friend[],
     totalFriends: number,
+    verifyEmail: boolean,
 }
 
 export interface Friend {

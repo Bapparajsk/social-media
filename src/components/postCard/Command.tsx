@@ -14,7 +14,10 @@ export default function Command() {
             </ModalBody>
             <ModalFooter className="border-t-[1px] border-gray-200 dark:border-gray-700">
                 <Avatar src="/newbg.jpeg" />
-                <Input className="tracking-wider" placeholder="Drop Your Commentd...." />
+                <Input 
+                    ref={e => e?.focus()}
+                    className="tracking-wider" 
+                    placeholder="Drop Your Commentd...." />
                 <Button isIconOnly variant="ghost" color={"success"}>
                     <IconLocation stroke={1.5}/>
                 </Button>

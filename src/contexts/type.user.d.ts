@@ -4,11 +4,14 @@ export interface User {
     title?: string | null;
     profilePicture: string | null;
     coverPicture: string | null;
-    likedPosts: Map<string, string>,
+    likedPosts: {
+        [key: string]: string;
+    },
     chatSystem: {
         chatRooms: Map<string, ChatRoom>;
         chatRoomHead: string | null;
     },
+    verifyEmail: boolean;
 }
 
 export interface ChatRoom {

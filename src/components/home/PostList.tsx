@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Card } from "../postCard";
+import FetchPost from "./fetchPost";
 
 let cachedScrollPosition = 0; // Cache scroll position
 
@@ -27,11 +27,7 @@ export default function PostList() {
 
     return (
         <div className="w-full h-auto">
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+            <FetchPost userFetching={false}/>
         </div>
     );
 }

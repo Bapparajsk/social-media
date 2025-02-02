@@ -25,7 +25,6 @@ export default function FetchData() {
         enabled: profile === null || profile.userId !== params.get('uid'),
     });
 
-
     if (isError) {
         return <Redirect to="/login" />;;
     }
@@ -37,7 +36,7 @@ export default function FetchData() {
     return (
         <>
             <ProfileHeading  profile={data} isFetching={isFetching}/>
-            <UserPost />
+            <UserPost userFetching={isFetching}/>
         </>
     );
 }

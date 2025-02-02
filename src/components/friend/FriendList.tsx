@@ -14,13 +14,13 @@ export default function FriendList({env = "friends"} : {env: "friends" | "friend
         data,
         fetchNextPage,
         isFetchingNextPage,
-      } = useInfiniteQuery({
+    } = useInfiniteQuery({
         queryKey: ['projects', env],
         queryFn: async ({ pageParam = 0 }) => getFriendList(pageParam + 1, env),
         getNextPageParam: (lastPage) => lastPage?.page,
         initialPageParam: 0,
         retry: 1,
-        gcTime: 1000 * 60 * 60 * 24, // 24 hour
+        gcTime: 1000 * 60, 
     });
 
     const { ref, entry } = useIntersection({

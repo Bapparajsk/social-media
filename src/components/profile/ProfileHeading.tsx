@@ -1,6 +1,5 @@
 "use client";
 
-import Image from 'next/image';
 import {
     Avatar,
     AvatarGroup,
@@ -9,12 +8,12 @@ import {
     ModalContent,
     useDisclosure,
     Skeleton,
+    Image
 } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 
-import { IconPlus, IconPencil, IconDotsVertical } from "@tabler/icons-react";
+import { IconPlus, IconPencil, IconDotsVertical, IconAt } from "@tabler/icons-react";
 import { SettingModel } from '../setting';
-// import { useProfile } from "@/contexts/profile.context";
 import { useUser } from '@/contexts/user.context';
 import { useState } from 'react';
 import FileUpload from "@/components/upload";
@@ -35,22 +34,21 @@ export default function ProfileHeading({ profile, isFetching }: { profile: Profi
                     <div className="relative w-full h-44 sm:h-52 md:h-60 lg:h-72 xl:h-80 flex justify-center items-center rounded-md">
                         <Skeleton className='w-full h-full object-cover rounded-md' style={{ display: isFetching ? 'block' : 'none' }} />
                         <Image
-                            width={1000}
-                            height={1000}
                             src={profile?.coverPicture || "/profile.jpg"}
                             alt="Profile Picture"
-                            className='w-full h-full object-cover rounded-md'
+                            className='w-screen h-44 sm:h-52 md:h-60 lg:h-72 xl:h-80 object-cover rounded-md cursor-pointer'
                             style={{ display: isFetching ? 'none' : 'block' }}
+                            isBlurred
                         />
-                        <div className='absolute w-28 h-28 md:w-32 md:h-32 xl:w-36 xl:h-36 rounded-full left-10 -bottom-[4rem] md:-bottom-[4.5rem] xl:-bottom-[5rem]'>
+                        <div className='absolute w-28 h-28 md:w-32 md:h-32 xl:w-36 xl:h-36 rounded-full left-10 -bottom-[4rem] md:-bottom-[4.5rem] xl:-bottom-[5rem] overflow-hidden'>
                             <Skeleton className='w-full h-full object-cover border-1 sm:border-2 md:border-3 xl:border-4 border-white dark:border-black rounded-full' style={{ display: isFetching ? 'block' : 'none' }} />
                             <Image
-                                width={150}
-                                height={150}
                                 src={profile?.profilePicture || "/newbg.jpeg"}
                                 alt="Profile Picture"
-                                className='w-full h-full object-cover border-1 sm:border-2 md:border-3 xl:border-4 border-white dark:border-black rounded-full'
+                                className='w-28 h-28 md:w-32 md:h-32 xl:w-36 xl:h-36 object-cover border-1 sm:border-2 md:border-3 xl:border-4 border-white dark:border-black rounded-full'
                                 style={{ display: isFetching ? 'none' : 'block' }}
+                                isBlurred
+                                isZoomed
                             />
                         </div>
                     </div>
@@ -62,7 +60,7 @@ export default function ProfileHeading({ profile, isFetching }: { profile: Profi
                                 <Skeleton className='w-56 h-4 rounded-lg' />
                             </div>
                             <div className={`flex flex-col justify-center ${isFetching ? 'hidden' : 'block'}`}>
-                                <p className='text-start text-lg sm:text-xl md:text-2xl xl:text-3xl font-semibold'>{profile?.name}</p>
+                                <p className='text-start text-lg sm:text-xl md:text-2xl xl:text-3xl font-semibold'>{profile?.name}</p> 
                                 <p className='text-start text-sm md:text-base xl:text-medium font-normal text-neutral-300 dark:text-neutral-500'>{profile?.title ? profile.title + " - " : ""} {profile?.totalFriends} Friends</p>
                             </div>
                             <div className='hidden sm:block'>
@@ -93,21 +91,34 @@ export default function ProfileHeading({ profile, isFetching }: { profile: Profi
                             </div>
                         </div>
                         <div style={{ display: isFetching ? "none" : "flex" }} className={`w-full md:w-auto gap-2 ${user?.userId !== profile?.userId ? 'hidden' : 'flex'}`}>
-                            <div className='flex-grow sm:flex-grow-0'>
-                                <Button fullWidth variant={"shadow"} color={"primary"} onPress={() => {
-                                    setModalState("create-post");
-                                    onOpen();
-                                }}>
-                                    <IconPlus stroke={1.5} />
-                                    <span className='md:hidden lg:block'>Create new Post</span>
-                                </Button>
-                            </div>
-                            <div>
-                                <Button >
-                                    <IconPencil stroke={1.5} />
-                                    <span className='md:hidden lg:block'>Edit Profile</span>
-                                </Button>
-                            </div>
+                            
+                            {profile.verifyEmail ? <>
+                                <div className='flex-grow sm:flex-grow-0'>
+                                    <Button fullWidth variant={"shadow"} color={"primary"} onPress={() => {
+                                        setModalState("create-post");
+                                        onOpen();
+                                    }}>
+                                        <IconPlus stroke={1.5} />
+                                        <span className='md:hidden lg:block'>Create new Post</span>
+                                    </Button>
+                                </div>
+                                <div>
+                                    <Button >
+                                        <IconPencil stroke={1.5} />
+                                        <span className='md:hidden lg:block'>Edit Profile</span>
+                                    </Button>
+                                </div>
+                            </> : (
+                                <div className='flex-grow sm:flex-grow-0'>
+                                    <Button fullWidth color={"warning"} onPress={() => {
+                                        setModalState("create-post");
+                                        onOpen();
+                                    }}>
+                                        <IconAt stroke={1.5} />
+                                        <span className='md:hidden lg:block'>Please verify your Email</span>
+                                    </Button>
+                                </div>
+                            )}
                             <div >
                                 <Button onPress={() => {
                                     setModalState("setting");
@@ -119,7 +130,6 @@ export default function ProfileHeading({ profile, isFetching }: { profile: Profi
                         </div>
                     </div>
                 </div>
-
             </div>
             <Modal backdrop="blur" isOpen={isOpen} size={modalState === "setting" ? "lg" : "xl"} onClose={onClose} hideCloseButton>
                 <ModalContent>
