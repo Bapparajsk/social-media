@@ -75,9 +75,8 @@ export const NavNavigation = () => {
             ((pathname === "/" ||
                 pathname.startsWith("/friend") || 
                 pathname.startsWith("/chatlist") || 
-                pathname.startsWith("/notification"
-
-            )) || width && width < 1024)
+                pathname.startsWith("/notification")
+            ))
         ) {
             const target = activeRef.current.getBoundingClientRect();
             const container = ref.current.getBoundingClientRect();
@@ -86,6 +85,8 @@ export const NavNavigation = () => {
                 const width = target.width;
                 setBarStyle({ left, width });
             }
+            console.log((width && width < 1024));
+            
         } else {
             setBarStyle(prev => ({ ...prev, width: 0 }));
         }
