@@ -75,6 +75,7 @@ export default function FetchPost({ userFetching }: { userFetching: boolean }) {
                         title={post.description || "nothing title"} 
                         postImage={post.postImage}
                         onLike={handleLike}
+                        commandCount={post.commandLength}
                     />
                 </div>
             ))}

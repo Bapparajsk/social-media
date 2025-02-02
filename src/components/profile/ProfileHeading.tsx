@@ -91,8 +91,7 @@ export default function ProfileHeading({ profile, isFetching }: { profile: Profi
                             </div>
                         </div>
                         <div style={{ display: isFetching ? "none" : "flex" }} className={`w-full md:w-auto gap-2 ${user?.userId !== profile?.userId ? 'hidden' : 'flex'}`}>
-                            
-                            {profile.verifyEmail ? <>
+                            {profile?.verifyEmail ? <>
                                 <div className='flex-grow sm:flex-grow-0'>
                                     <Button fullWidth variant={"shadow"} color={"primary"} onPress={() => {
                                         setModalState("create-post");

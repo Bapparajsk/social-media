@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-// import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { IconHeart, IconHeartFilled, IconMessage2, IconShare, IconTrash } from "@tabler/icons-react";
 import {
@@ -26,6 +25,7 @@ export const Card = ({
     isLiked,
     likes,
     onLike,
+    commandCount,
 }: {
     author: {
         _id: string,
@@ -40,10 +40,12 @@ export const Card = ({
     isLiked?: boolean;
     likes: number;
     onLike?: (id: string | undefined) => void;
+    commandCount?: number;
 }) => {
 
     const [modalState, setModalState] = useState<"command" | "share">();
     const [postLikes, setPostLikes] = useState(likes);
+    const [commandCountState, setCommandCountState] = useState(commandCount || 0);
     const {isOpen, onOpen, onClose} = useDisclosure();
     const router = useRouter();
 
@@ -63,6 +65,10 @@ export const Card = ({
                 }
             });
         }
+    };
+
+    const handleCommand = () => {
+        setCommandCountState((prev) => prev + 1);
     };
 
     return (
@@ -116,7 +122,7 @@ export const Card = ({
                             
                         </Button>
                         <Button variant="ghost" fullWidth onPress={() => handleModal("command")}>
-                            <span className="font-bold">7.2M</span>
+                            <span className="font-bold">{commandCountState}</span>
                             <IconMessage2 stroke={1.5} />
                         </Button>
                         <Button variant="ghost" fullWidth onPress={() => handleModal("share")}>
@@ -134,7 +140,7 @@ export const Card = ({
             >
                 <ModalContent>
                     {() => modalState === "command" ? (
-                        <CommandComponent/>
+                        <CommandComponent id={id} onCommand={handleCommand}/>
                     ) : (
                         <ShareComponent/>
                     )}
