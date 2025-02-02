@@ -5,7 +5,7 @@ export default function SearchModel() {
         <>
             <ModalBody>
                 <div className="w-full h-72 flex items-center justify-center">
-                    <p>Coming son...</p>
+                    <p>Coming soon...</p>
                 </div>
             </ModalBody>
         </>

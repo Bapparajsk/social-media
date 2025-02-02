@@ -64,7 +64,6 @@ export const NavNavigation = () => {
     const activeRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
     
-
     const {isOpen, onOpen, onClose} = useDisclosure();
     const { push } = useRouter();
     const { width } = useScreenSize();
@@ -85,8 +84,6 @@ export const NavNavigation = () => {
                 const width = target.width;
                 setBarStyle({ left, width });
             }
-            console.log((width && width < 1024));
-            
         } else {
             setBarStyle(prev => ({ ...prev, width: 0 }));
         }
