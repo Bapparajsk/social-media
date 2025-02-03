@@ -25,7 +25,7 @@ export const Card = ({
     isLiked,
     likes,
     onLike,
-    commandCount,
+    commentsCount,
 }: {
     author: {
         _id: string,
@@ -40,12 +40,12 @@ export const Card = ({
     isLiked?: boolean;
     likes: number;
     onLike?: (id: string | undefined) => void;
-    commandCount?: number;
+    commentsCount?: number;
 }) => {
 
     const [modalState, setModalState] = useState<"command" | "share">();
     const [postLikes, setPostLikes] = useState(likes);
-    const [commandCountState, setCommandCountState] = useState(commandCount || 0);
+    const [commandCountState, setCommandCountState] = useState(commentsCount || 0);
     const {isOpen, onOpen, onClose} = useDisclosure();
     const router = useRouter();
 

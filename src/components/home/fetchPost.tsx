@@ -7,6 +7,7 @@ import { useEffect, } from "react";
 import { useUser } from "@/contexts/user.context";
 import Server from "@/lib/axios";
 import { Card } from "../postCard";
+import SkeletonPostCard from "../skeletons/postCard";
 
 export default function FetchPost({ userFetching }: { userFetching: boolean }) {
 
@@ -62,7 +63,7 @@ export default function FetchPost({ userFetching }: { userFetching: boolean }) {
 
     return (
         <div className="py-2">
-            {userFetching ? <h1> Loading... </h1> : posts?.map((post: any, idx: number) => (
+            {userFetching ? <SkeletonPostCard count={2} /> : posts?.map((post: any, idx: number) => (
                 <div key={idx} ref={idx === posts.length - 1 ? ref : null} className="mb-2">
                     <Card 
                         isLiked={user?.likedPosts[post._id] ? true : false}
@@ -75,11 +76,11 @@ export default function FetchPost({ userFetching }: { userFetching: boolean }) {
                         title={post.description || "nothing title"} 
                         postImage={post.postImage}
                         onLike={handleLike}
-                        commandCount={post.commandLength}
+                        commentsCount={post.commentsCount}
                     />
                 </div>
             ))}
-            {isFetchingNextPage && <h1>Loading...</h1>}
+            {isFetchingNextPage && <SkeletonPostCard count={3} />}
         </div>
     );
 }
