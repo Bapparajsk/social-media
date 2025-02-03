@@ -125,8 +125,8 @@ export const Card = ({
                             <span className="font-bold">{commandCountState}</span>
                             <IconMessage2 stroke={1.5} />
                         </Button>
-                        <Button variant="ghost" fullWidth onPress={() => handleModal("share")}>
-                            <span className="font-bold">29.1B</span>
+                        <Button disabled variant="ghost" fullWidth>
+                            <span className="font-bold">-</span>
                             <IconShare stroke={1.5} />
                         </Button>
                     </div>
