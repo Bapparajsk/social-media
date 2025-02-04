@@ -5,6 +5,7 @@ import { useIntersection } from '@mantine/hooks';
 
 import FriendItem from "./FriendItem";
 import { getFriendList } from "@/lib/friend";
+import SkeletonFriendCard from "../skeletons/friendCard";
 
 
 export default function FriendList({env = "friends"} : {env: "friends" | "friend-requests" | "suggestions"}) {
@@ -14,6 +15,7 @@ export default function FriendList({env = "friends"} : {env: "friends" | "friend
         data,
         fetchNextPage,
         isFetchingNextPage,
+        isPending,
     } = useInfiniteQuery({
         queryKey: ['projects', env],
         queryFn: async ({ pageParam = 0 }) => getFriendList(pageParam + 1, env),
@@ -35,16 +37,17 @@ export default function FriendList({env = "friends"} : {env: "friends" | "friend
     }, [entry, isFetchingNextPage]);
 
     const friends = data?.pages.at(-1);
-
+    console.log(friends);
+    
     return (
         <div className="w-full flex gap-2 flex-wrap p-3 justify-center">
-            {friends?.map((friend: any, idx: number) => {
-                
-                if (idx === friends.length - 1) {
-                    return <FriendItem key={idx} id={friend._id} name={friend.name} ref={ref} />;
-                }
-                return <FriendItem key={idx} id={friend._id} name={friend.name}/>;
-            })}
+            {isPending && <SkeletonFriendCard count={3}/>}
+            
+            {friends?.map((friend: any, idx: number) => (
+                <FriendItem env={env} ref={idx === friends.length -1 ? ref : null} key={idx} id={env === "suggestions" ? friend._id : friend.userId} name={friend.name}/>
+            ))}
+            {friends?.length === 0 && <p>No friends found</p>}
+            {isFetchingNextPage && <SkeletonFriendCard count={6}/>}
         </div>
     );
 }

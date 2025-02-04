@@ -17,9 +17,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         queryKey: ['user'],
         queryFn: async () => {
             console.log('fetching user');
-            console.log(user);
+            // console.log(user);
             
             const userData = await getUser();
+            console.log(userData);
+            
             return userData;
         },
         enabled: !user && !page,
