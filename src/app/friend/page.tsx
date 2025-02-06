@@ -42,9 +42,7 @@ export default function Friend() {
                     </MotionDiv>
                     <div className="flex justify-center flex-grow">
                         <Tabs
-                            onSelectionChange={e => {                                
-                                push(`/friend?env=${e}`);
-                            }}
+                            onSelectionChange={e => { push(`/friend?env=${e}`); }}
                             defaultSelectedKey={env === null ? "suggestions" : env as Key}
                             aria-label="Options"
                             color={env === "friends" ? "primary" : env === "friend-requests" ? "warning" : "success"}
