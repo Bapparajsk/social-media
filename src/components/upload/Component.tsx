@@ -61,9 +61,10 @@ export default function Component() {
             setImage(null);
             setDescription("");
             progress.set(0);
-
+            console.log(error);
+            
             if(!isAxiosError(error)) {
-                showError("An error occurred", "error");
+                showError(error.message || "An error occurred", "error");
                 return;
             }
 

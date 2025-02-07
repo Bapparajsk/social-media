@@ -14,15 +14,15 @@ export function Providers({children}: { children: ReactNode }) {
     return (
         <NextUIProvider>
             <QueryClientProvider client={queryClient}>
-                <NotificationProvider>
                     <UserProvider>
-                        <ProfileProvider>
-                            <AuthProvider>
-                                {children}
-                            </AuthProvider>
-                        </ProfileProvider>
+                        <NotificationProvider>
+                            <ProfileProvider>
+                                <AuthProvider>
+                                    {children}
+                                </AuthProvider>
+                            </ProfileProvider>
+                        </NotificationProvider>
                     </UserProvider>
-                </NotificationProvider>
             </QueryClientProvider>
         </NextUIProvider>
     );

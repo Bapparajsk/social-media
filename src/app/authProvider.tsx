@@ -4,11 +4,13 @@ import { usePathname } from "next/navigation";
 import { useUser } from "@/contexts/user.context";
 import { getUser } from "@/lib/user";
 import Redirect from "@/components/ui/Redirect";
+import { useNotification } from "@/contexts/notification.context";
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
 
     const pathname = usePathname();
     const { user, setUser } = useUser();
+    const { loginSocket } = useNotification();
     const queryClient = useQueryClient();
 
     const page = pathname.startsWith('/login') || pathname.startsWith('/register');
@@ -16,12 +18,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     const { isPending, isError, isSuccess, data } = useQuery({
         queryKey: ['user'],
         queryFn: async () => {
-            console.log('fetching user');
-            // console.log(user);
-            
             const userData = await getUser();
             console.log(userData);
-            
             return userData;
         },
         enabled: !user && !page,
@@ -30,6 +28,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {   
         if (data) {
+            loginSocket(data.userId);
             setUser(data);
         }
     },[data, setUser]);
