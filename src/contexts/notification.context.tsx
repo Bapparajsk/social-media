@@ -2,11 +2,9 @@
 
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
-import { Button } from "@nextui-org/button";
 import { NotificationContextProps, PushNotificationType } from "./type.notification";
 import { getSocket } from "../lib/socket";
-
-
+import Image from "next/image";
 
 const NotificationContext = createContext<NotificationContextProps | undefined>(undefined);
 
@@ -16,27 +14,11 @@ export const NotificationProvider = ({ children }: {children: ReactNode}) => {
 
     useEffect(() => {
         socket.on("notification", (data: PushNotificationType) => {
-            console.log("notification", data);
-
-            let action;
-
-            if (data.link) {
-                action = {
-                    label: data.linkName || "View",
-                    onClick: () => {
-                        <Button size="sm" color="success" variant="shadow">
-                            {data.linkName || "View"}
-                        </Button>;
-                    }
-                };
-            }
-
-            toast.info(
-                <div>
-                    <h1>{data.name}</h1>
-                    <p>{data.title}</p>
-                </div>,
-                { action: action || null }
+            toast( 
+                <div className="flex items-center space-x-2">
+                    <Image src={"/newbg.jpeg"} className="w-12 h-12 rounded-full " alt={data.title} width={50} height={50} />
+                    <h3>{data.title}</h3>
+                </div>, 
             );
         });
 
