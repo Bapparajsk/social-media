@@ -9,6 +9,7 @@ export const getFriendList = async (pageParam = 1, env: "friends" | "friend-requ
 };
 
 export const friendMutation = async ({ id, key }: {id: string, key: "send-request" | "accept-request" | "reject-request" | "remove-friend"}) => {
-    const { data } = await Server.post(`/api/friend/${key}/${id}`);
+    const method = key === "remove-friend" ? "delete" : "post";
+    const { data } = await Server[method](`/api/friend/${key}/${id}`);
     return data?.message || "Success";
 };
