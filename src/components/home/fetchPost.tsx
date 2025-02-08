@@ -49,16 +49,20 @@ export default function FetchPost({ userFetching }: { userFetching: boolean }) {
             return;
         }
 
-        await Server.post(`/api/post/${id}/like`);
+        try {
+            await Server.post(`/api/post/${id}/like`);
 
-        const like = user.likedPosts;
-        if (like[id]) {
-            delete like[id];
-        } else {
-            like[id] = id;
+            const like = user.likedPosts;
+            if (like[id]) {
+                delete like[id];
+            } else {
+                like[id] = id;
+            }
+
+            setUser({ ...user, likedPosts: like });
+        } catch (error) {
+            console.log(error);
         }
-
-        setUser({ ...user, likedPosts: like });
     };
 
     return (

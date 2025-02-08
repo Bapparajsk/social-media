@@ -64,6 +64,11 @@ export default function Command({ id, onCommand }: { id: string | undefined, onC
             return;
         }
 
+        if (user.verifyEmail === false) {
+            showNotification("You need to verify your email to comment", "error");
+            return;
+        }
+
         try {
             data.push({
                 userId: {

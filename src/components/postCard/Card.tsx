@@ -14,6 +14,8 @@ import {
 
 import CommandComponent from "./Command";
 import ShareComponent from "./Share";
+import { useUser } from "@/contexts/user.context";
+import { useNotification } from "@/contexts/notification.context";
 
 export const Card = ({
     id,
@@ -48,6 +50,8 @@ export const Card = ({
     const [commandCountState, setCommandCountState] = useState(commentsCount || 0);
     const {isOpen, onOpen, onClose} = useDisclosure();
     const router = useRouter();
+    const { user } = useUser();
+    const { show } = useNotification();
 
     const handleModal = (state: "command" | "share") => {
         setModalState(state);
@@ -55,6 +59,16 @@ export const Card = ({
     };
 
     const HandleClickLike = async () => {
+        if(user === null) {
+            show("You need to login to like a post", "error");
+            return;
+        }
+
+        if(user.verifyEmail === false) {
+            show("You need to verify your email to like a post", "error");
+            return;
+        }
+
         if (onLike) {
             onLike(id);
             setPostLikes((prev) => {
@@ -119,7 +133,6 @@ export const Card = ({
                             fullWidth>
                             <span className="font-bold">{postLikes}</span>
                             {isLiked ? <IconHeartFilled stroke={1.5} /> : <IconHeart stroke={1.5} />}
-                            
                         </Button>
                         <Button variant="ghost" fullWidth onPress={() => handleModal("command")}>
                             <span className="font-bold">{commandCountState}</span>
