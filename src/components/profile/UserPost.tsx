@@ -62,7 +62,7 @@ export default function UserPost({ userFetching }: { userFetching: boolean }) {
         }
 
         setUser({ ...user, likedPosts: like });
-    };
+    };    
 
     return (
         <div className="py-2">
@@ -70,7 +70,7 @@ export default function UserPost({ userFetching }: { userFetching: boolean }) {
                 <div key={idx} ref={idx === posts.length - 1 ? ref : null}> 
                     <Card  
                         isLiked={user?.likedPosts[post._id] ? true : false}
-                        likes={post.like} 
+                        likes={post.likes} 
                         createdAt={post.createdAt} 
                         author={post.author} 
                         id={post._id} 

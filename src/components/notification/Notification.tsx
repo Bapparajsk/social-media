@@ -1,11 +1,11 @@
 "use client";
 
-import { ReactNode } from "react";
 import { Card, CardHeader, CardBody, CardFooter, Divider, Image } from "@nextui-org/react";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import { typeColor } from "./typeColor";
+import { getBorderColor } from "./typeColor";
+import { PushNotificationType } from "@/contexts/type.notification";
 
 export default function Notification({
     name,
@@ -15,25 +15,17 @@ export default function Notification({
     link,
     linkName,
     type,
-} : {
-    name?: string;
-    title?: string;
-    imageSrc?: string;
-    description?: ReactNode | string | undefined;
-    link?: string;
-    linkName?: string;
-    type?: "post" | "friend-request" | "comment" | "like" | "share" | "friend-reject" | "message" | "notification" | undefined;
-}) {
+} : PushNotificationType) {
 
     return (
-        <Card className={cn("mb-3 border-b", typeColor[type || "notification"])}>
+        <Card className={cn("mb-3 border-b", getBorderColor(type || "notification"))}>
             <CardHeader className="flex gap-3">
                 <Image
-                    alt="nextui logo"
                     height={40}
-                    radius="sm"
-                    src={imageSrc || "https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
                     width={40}
+                    radius="sm"
+                    src={imageSrc?.url || "https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
+                    alt={imageSrc?.alt || "User Image"}
                 />
                 <div className="flex flex-col">
                     <p className="text-md">{name || "New Notification"}</p>

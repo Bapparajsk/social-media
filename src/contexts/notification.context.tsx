@@ -11,6 +11,7 @@ const NotificationContext = createContext<NotificationContextProps | undefined>(
 export const NotificationProvider = ({ children }: {children: ReactNode}) => {
 
     const [socket,] = useState(getSocket());
+    const [notification, setNotification] = useState<PushNotificationType[]>([]);
 
     useEffect(() => {
         socket.on("notification", (data: PushNotificationType) => {
@@ -55,8 +56,13 @@ export const NotificationProvider = ({ children }: {children: ReactNode}) => {
         socket.emit("login", id);
     };
 
+
+    const setNotifications = (notification: PushNotificationType[]) => {
+        setNotification(notification);
+    };
+
     return (
-        <NotificationContext value={{ show, loginSocket }}>
+        <NotificationContext value={{ show, loginSocket, notification, setNotifications }}>
             <Toaster richColors visibleToasts={5}/>
             {children}
         </NotificationContext>

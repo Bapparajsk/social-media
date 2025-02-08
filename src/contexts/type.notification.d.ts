@@ -1,6 +1,8 @@
 export interface NotificationContextProps {
     show: (message: string, type?: string) => void;
     loginSocket: (id: string) => void;
+    notification: PushNotificationType[];
+    setNotifications: (notification: PushNotificationType[]) => void;
 }
 
 export interface PushNotificationType {
