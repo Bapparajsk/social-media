@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ModalBody, ModalHeader, Accordion, AccordionItem, Button, Input, Checkbox } from "@nextui-org/react";
+import { ModalBody, ModalHeader, Accordion, AccordionItem, Button, Input } from "@nextui-org/react";
 import {
     IconLockPassword,
     IconSignature,
@@ -17,7 +17,6 @@ import {
 } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import Server from "@/lib/axios";
@@ -26,6 +25,7 @@ import SettingSwitch from "./SettingSwitch";
 import SettingLabels from "./SettingLabels";
 import { useUser } from "@/contexts/user.context";
 import { useNotification } from "@/contexts/notification.context";
+import ChangePasswordCard from "./changePasswordCard";
 
 
 interface Event {
@@ -50,8 +50,12 @@ export default function SettingModel() {
 
     const [event, setEvent] = useState<EventType>({ name: false, title: false, pass: false });
     const [isChanged, setIsChanged] = useState<Event>({ name: false, title: false });
-    const { user } = useUser();
+    const { user, setUser } = useUser();
     const { show: notification } = useNotification();
+
+    if (user === null) {
+        redirect("/login");
+    }
 
     const [input, setInput] = useState<InputType>({ name:"", title: "" });
 
@@ -74,6 +78,11 @@ export default function SettingModel() {
         },
         onSuccess: (message) => {
             notification(message as string || "User updated successfully", "success");
+            if (!user) {
+                redirect("/login");
+            }
+
+            setUser({ ...user, name: `@${input.name}`, title: input.title });
         },
         onError: (error) => {
             console.log(error);
@@ -87,10 +96,6 @@ export default function SettingModel() {
             notification(response?.data.message || "An error occurred", "error");
         },
     });
-
-    if (user === null) {
-        redirect("/login");
-    }
 
     useEffect(() => {
         setInput({ name: user.name.substring(1) || "", title: user.title || "" });
@@ -174,28 +179,7 @@ export default function SettingModel() {
                             title="Change Password"
                             buttonProps={{ title: "Change", size: "sm", variant: "faded", color: "danger", onPress: (is: boolean) => setEvent({ ...event, "pass": is }), }}
                             eventTrigger={event.pass}
-                            EventComponent={
-                                <div className="flex flex-col items-center justify-between gap-2 border-b pb-2 border-gray-600">
-                                    {!user.isNewPassword && <Input type="password" placeholder="Enter old password" />}
-                                    <Input type="password" placeholder="New password" />
-                                    <Input type="password" placeholder="Confirm new password" />
-                                    <div className="w-full flex flex-row items-center justify-between gap-2">
-                                        <Checkbox color="primary" size="md">
-                                            Show Password
-                                        </Checkbox>
-                                        {!user.isNewPassword && <Link
-                                            href="/forgot-password"
-                                            className="text-medium tracking-tight font-mono relative group text-primary-500"
-                                        >
-                                            Forgot Password
-                                            <span
-                                                className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-primary-500 group-hover:w-full transition-all duration-300`}
-                                            />
-                                        </Link>}
-                                    </div>
-                                    <Button fullWidth variant="shadow" color="primary">Change Password</Button>
-                                </div>
-                            }
+                            EventComponent={<ChangePasswordCard user={user}/>}
                         />
                         <SettingSwitch
                             Icon={IconAuth2fa}
@@ -208,7 +192,7 @@ export default function SettingModel() {
                                 endContent: <IconShieldOff size={20} />,
                             }}
                         />
-                        <div className="max-h-[300px] overflow-y-scroll border-t border-gray-200 dark:border-gray-800">
+                        <div className="max-h-[300px] border-t border-gray-200 dark:border-gray-800">
                             <Accordion>
                                 <AccordionItem
                                     key="1" aria-label="Devices"

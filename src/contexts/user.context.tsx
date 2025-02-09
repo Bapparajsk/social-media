@@ -7,8 +7,12 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
 
+    const isAuth = () => {
+        return user !== null;
+    };
+
     return (
-        <UserContext value={{ user, setUser }}>
+        <UserContext value={{ user, setUser, isAuth }}>
             {children}
         </UserContext>
     );

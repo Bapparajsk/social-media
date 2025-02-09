@@ -31,4 +31,5 @@ export interface Message {
 export interface UserContextProps {
     user: User | null;
     setUser: (user: User | null) => void;
+    isAuth: () => boolean;
 }

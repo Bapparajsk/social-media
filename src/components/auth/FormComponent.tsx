@@ -12,8 +12,6 @@ import { login, verifyLoginOtp, registerServer, loginErrorSet, registerErrorSet,
 import { isAxiosError } from "axios";
 
 
-
-
 export const FormComponent = ({ state }: { state: "login" | "register" }) => {
     const [isMainError, setIsMainError] = useState<string | null>(null);
     const [tempToken, setTempToken] = useState<string | null>(null);
