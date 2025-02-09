@@ -51,14 +51,12 @@ export const NotificationProvider = ({ children }: {children: ReactNode}) => {
     };
 
     const loginSocket = (id: string) => {
-        console.log("loginSocket", id);
-        
         socket.emit("login", id);
     };
 
 
     const setNotifications = (notification: PushNotificationType[]) => {
-        setNotification(notification);
+        setNotification(prev => [...prev, ...notification]);
     };
 
     return (

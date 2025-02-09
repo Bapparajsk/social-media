@@ -10,22 +10,25 @@ import { PushNotificationType } from "@/contexts/type.notification";
 export default function Notification({
     name,
     title,
-    imageSrc,
+    // imageSrc,
     description,
     link,
     linkName,
     type,
+    isRead,
 } : PushNotificationType) {
 
     return (
-        <Card className={cn("mb-3 border-b", getBorderColor(type || "notification"))}>
+        <Card className={cn("mb-3", isRead ? "border-b" : "border", getBorderColor(type || "notification"))}>
             <CardHeader className="flex gap-3">
                 <Image
                     height={40}
                     width={40}
                     radius="sm"
-                    src={imageSrc?.url || "https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
-                    alt={imageSrc?.alt || "User Image"}
+                    src={"https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
+                    alt={"User Image"}
+                    // src={imageSrc?.url || "https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
+                    // alt={imageSrc?.alt || "User Image"}
                 />
                 <div className="flex flex-col">
                     <p className="text-md">{name || "New Notification"}</p>

@@ -39,9 +39,9 @@ export default function FetchPost({ userFetching }: { userFetching: boolean }) {
         if (entry?.isIntersecting && !isFetchingNextPage) {
             fetchNextPage();
         }
-    }, [entry, isFetchingNextPage]);
+    }, [entry, isFetchingNextPage, fetchNextPage]);
     
-    const posts = data?.pages.flat()?.map((post: any) => post.posts).flat();
+    const posts = data?.pages.flat()?.map((post: any) => post.posts).flat() || [];
 
     const handleLike = async (id: string | undefined) => {
         if (!id) return;
@@ -70,17 +70,17 @@ export default function FetchPost({ userFetching }: { userFetching: boolean }) {
             {userFetching ? <SkeletonPostCard count={2} /> : posts?.map((post: any, idx: number) => (
                 <div key={idx} ref={idx === posts.length - 1 ? ref : null} className="mb-2">
                     <Card 
-                        isLiked={user?.likedPosts[post._id] ? true : false}
-                        likes={post.likes}
-                        createdAt={post.createdAt} 
-                        author={post.author} 
-                        id={post._id} 
-                        isOwner={post.author._id === user?.userId} 
+                        isLiked={user?.likedPosts[post?._id] ? true : false}
+                        likes={post?.likes}
+                        createdAt={post?.createdAt} 
+                        author={post?.author} 
+                        id={post?._id} 
+                        isOwner={post?.author?._id === user?.userId} 
                         key={idx} 
-                        title={post.description || "nothing title"} 
-                        postImage={post.postImage}
+                        title={post?.description || "nothing title"} 
+                        postImage={post?.postImage}
                         onLike={handleLike}
-                        commentsCount={post.commentsCount}
+                        commentsCount={post?.commentsCount}
                     />
                 </div>
             ))}

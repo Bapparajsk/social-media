@@ -36,7 +36,7 @@ export default function FriendList({ env = "friends" }: { env: "friends" | "frie
         if (entry?.isIntersecting && !isFetchingNextPage) {
             fetchNextPage();
         }
-    }, [entry, isFetchingNextPage]);
+    }, [entry, isFetchingNextPage, fetchNextPage]);
 
     const friends = data?.pages.at(-1);
 

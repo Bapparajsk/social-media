@@ -42,7 +42,7 @@ export default function UserPost({ userFetching }: { userFetching: boolean }) {
         if (entry?.isIntersecting && !isFetchingNextPage) {
             fetchNextPage();
         }
-    }, [entry, isFetchingNextPage]);
+    }, [entry, isFetchingNextPage, fetchNextPage]);
     
     const posts = data?.pages.flat()?.map((post: any) => post.posts).flat();
 
