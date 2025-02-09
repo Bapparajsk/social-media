@@ -12,6 +12,7 @@ export interface User {
         chatRoomHead: string | null;
     },
     verifyEmail: boolean;
+    isNewPassword: boolean;
 }
 
 export interface ChatRoom {

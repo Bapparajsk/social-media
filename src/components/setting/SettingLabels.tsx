@@ -12,9 +12,10 @@ type SettingLabelsProps = {
         size: "sm" | "md" | "lg";
         variant: "flat" | "faded" | "shadow";
         color?: "primary" | "success" | "warning" | "danger" | "default";
-        onPress: (is: boolean) => void
+        onPress: (is: boolean) => void,
+        
     }
-    event: boolean;
+    eventTrigger: boolean;
     EventComponent?: React.ReactNode;
     onSubmit?: () => void;
 }
@@ -23,13 +24,10 @@ export default function SettingLabels({
     Icon,
     title,
     buttonProps,
-    event,
+    eventTrigger,
     EventComponent,
     onSubmit
 } : SettingLabelsProps) {
-
-
-
     return (
         <div className="flex flex-col items-center gap-2">
             <div className="w-full flex flex-row items-center justify-between">
@@ -39,15 +37,15 @@ export default function SettingLabels({
                 </div>
                 <Button
                     size={buttonProps.size}
-                    variant={event ? "shadow" : buttonProps.variant}
-                    onPress={() => buttonProps.onPress(!event)}
+                    variant={eventTrigger ? "shadow" : buttonProps.variant}
+                    onPress={() => buttonProps.onPress(!eventTrigger)}
                     color={buttonProps.color || "primary"}
                 >
                     Change
                 </Button>
             </div>
             <AnimatePresence>
-                {event && (
+                {eventTrigger && (
                     <form 
                         className="w-full"
                         onSubmit={(e) => {
