@@ -72,7 +72,7 @@ export const FormComponent = ({ state }: { state: "login" | "register" }) => {
                 if (!tempToken) {
                     return;
                 }
-                await verifyLoginOtp(tempToken, otp);
+                await verifyLoginOtp(otp, tempToken);
             } else {
                 await verifyRegisterOtp(otp);
             }

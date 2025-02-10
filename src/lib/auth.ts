@@ -12,7 +12,9 @@ export const login = async (email: string, password: string) => {
 };
 
 export const verifyLoginOtp = async (otp: string, tempToken: string) => {
-    const res = await Server.post("/api/auth/otp/login-with'", { otp, tempToken });
+    console.log(otp, tempToken);
+    
+    const res = await Server.post("/api/auth/otp/login-with", { otp, tempToken });
     return res.data;
 };
 

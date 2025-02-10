@@ -37,11 +37,11 @@ export default function TowFactorAuth({ user, onSubmitted }: { user: User, onSub
     }, 
     onError: (error) => {
       if(!isAxiosError(error)) {
-        setOtpError(error.message || "Something went wrong");
+        
         show("Something went wrong", "error");
         return;
       };
-      setOtpError(error.response?.data.message || "Something went wrong");
+      
       show(error.response?.data.message || "Something went wrong", "error");
     }
   });
@@ -54,9 +54,11 @@ export default function TowFactorAuth({ user, onSubmitted }: { user: User, onSub
       setIsOpen({ isOpen: false, state: "register" });
     } catch (error) {
       if(!isAxiosError(error)) {
+        setOtpError("Something went wrong");
         show("Something went wrong", "error");
         return;
       };
+      setOtpError(error.response?.data.message || "Something went wrong");
       show(error.response?.data.message || "Something went wrong", "error");
     }
   };
