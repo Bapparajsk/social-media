@@ -1,8 +1,8 @@
-
 import { useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useIntersection } from '@mantine/hooks';
 import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
 
 import FriendItem from "./FriendItem";
 import { getFriendList } from "@/lib/friend";
@@ -48,7 +48,16 @@ export default function FriendList({ env = "friends" }: { env: "friends" | "frie
                 {friends?.map((friend: any, idx: number) => (
                     <FriendItem env={env} ref={((friends.length >= 5) && idx === friends.length - 1) ? ref : null} key={idx} id={env === "suggestions" ? friend._id : friend.userId} name={friend.name} />
                 ))}
-                {friends?.length === 0 && <p>No friends found</p>}
+                {friends?.length === 0 && (
+                    <motion.div
+                    className="text-center text-gray-500 text-lg"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    No {env} found 😢
+                  </motion.div>
+                )}
                 {isFetchingNextPage && <SkeletonFriendCard count={6} />}
             </div>
             <GetButton env={env}/>

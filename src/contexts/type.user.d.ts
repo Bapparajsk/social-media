@@ -13,6 +13,7 @@ export interface User {
     },
     verifyEmail: boolean;
     isNewPassword: boolean;
+    towFactorAuth: boolean;
 }
 
 export interface ChatRoom {

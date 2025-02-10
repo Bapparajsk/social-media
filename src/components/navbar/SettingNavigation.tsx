@@ -39,7 +39,7 @@ export const SettingNavigation = () => {
                     </div>
                 </Button>
             </div>
-            <Modal backdrop="blur" isOpen={isOpen} size={modalState === "setting" ? "lg" : "5xl"} onClose={onClose}>
+            <Modal backdrop="blur" isOpen={isOpen} size={modalState === "setting" ? "lg" : "5xl"} onClose={onClose} isDismissable={false}>
                 <ModalContent>
                     {() => (modalState === "search" ? <SearchModel /> : <SettingModel />)}
                 </ModalContent>

@@ -10,10 +10,7 @@ import {
     IconBellRinging,
     IconBell,
     IconBellOff,
-    IconAuth2fa,
     IconDevicesSearch,
-    IconShieldOff,
-    IconShield,
 } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
@@ -26,6 +23,7 @@ import SettingLabels from "./SettingLabels";
 import { useUser } from "@/contexts/user.context";
 import { useNotification } from "@/contexts/notification.context";
 import ChangePasswordCard from "./changePasswordCard";
+import TowFactorAuth from "./2FA";
 
 
 interface Event {
@@ -178,19 +176,11 @@ export default function SettingModel() {
                             title="Change Password"
                             buttonProps={{ title: "Change", size: "sm", variant: "faded", color: "danger", onPress: (is: boolean) => setEvent({ ...event, "pass": is }), }}
                             eventTrigger={event.pass}
-                            EventComponent={<ChangePasswordCard user={user}/>}
+                            EventComponent={<ChangePasswordCard user={user} setEvent={() => setEvent({...event, pass: false})}/>}
                         />
-                        <SettingSwitch
-                            Icon={IconAuth2fa}
-                            title="Turn on 2-Step Verification"
-                            switchProps={{
-                                defaultSelected: true,
-                                color: "primary",
-                                size: "md",
-                                startContent: <IconShield size={20} />,
-                                endContent: <IconShieldOff size={20} />,
-                            }}
-                        />
+                        <TowFactorAuth user={user} onSubmitted={(towFactorAuth: boolean) => {
+                            setUser({ ...user, towFactorAuth: towFactorAuth });
+                        }}/>
                         <div className="max-h-[300px] border-t border-gray-200 dark:border-gray-800">
                             <Accordion>
                                 <AccordionItem
@@ -213,7 +203,7 @@ export default function SettingModel() {
                             Icon={IconSun}
                             title="Light Mode"
                             switchProps={{
-                                defaultSelected: true,
+                                isSelected: true,
                                 color: "primary",
                                 size: "md",
                                 startContent: <IconMoon size={20} />,
@@ -224,7 +214,7 @@ export default function SettingModel() {
                             Icon={IconBellRinging}
                             title="Notification"
                             switchProps={{
-                                defaultSelected: true,
+                                isSelected: true,
                                 color: "warning",
                                 size: "md",
                                 startContent: <IconBellOff size={20} />,

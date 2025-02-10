@@ -7,6 +7,7 @@ import {
     ModalBody,
     ModalFooter,
     InputOtp,
+    InputOtpProps,
     Button
 } from "@nextui-org/react";
 
@@ -21,7 +22,8 @@ export default function OtpModal({
     isOpen,
     setIsOpen,
     isError,
-    errorMessage
+    errorMessage,
+    inputProps,
 }: {
     onSubmit: (otp: string) => void;
     resendOtp: () => void;
@@ -29,6 +31,7 @@ export default function OtpModal({
     setIsOpen: () => void;
     isError: boolean;
     errorMessage: string;
+    inputProps?: InputOtpProps;
 }) {
 
     const [otp, setOtp] = useState<string>("");
@@ -84,6 +87,7 @@ export default function OtpModal({
                                         length={OTP_LENGTH}
                                         value={otp}
                                         onValueChange={setOtp}
+                                        {...inputProps}
                                     />
 
                                     <div className="w-full">

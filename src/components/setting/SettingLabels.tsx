@@ -41,7 +41,7 @@ export default function SettingLabels({
                     onPress={() => buttonProps.onPress(!eventTrigger)}
                     color={buttonProps.color || "primary"}
                 >
-                    Change
+                    {title}
                 </Button>
             </div>
             <AnimatePresence>
