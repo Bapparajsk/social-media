@@ -16,5 +16,5 @@ export const uploadFile = async (url: string, file: File) => {
 };
 
 export const createPost = async (accessToken: string, description?: string) => {
-    await Server.post('/api/post/verify-post', { accessToken, description });
+    await Server.put('/api/post/verify-post', { accessToken, description });
 };

@@ -72,7 +72,6 @@ export default function SettingModel() {
             if (!isValidChange) throw new Error(`${env.charAt(0).toUpperCase() + env.slice(1)} not changed or missing`);
 
             const { data } = await Server.patch(`/api/user/update/${env}`, { name: env === "name" ? name : title });
-            console.log(data);
 
             return data.message;
         },

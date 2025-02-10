@@ -50,7 +50,7 @@ export default function FetchPost({ userFetching }: { userFetching: boolean }) {
         }
 
         try {
-            await Server.post(`/api/post/${id}/like`);
+            await Server.patch(`/api/post/${id}/like`);
 
             const like = user.likedPosts;
             if (like[id]) {

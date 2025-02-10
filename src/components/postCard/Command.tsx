@@ -70,7 +70,7 @@ export default function Command({ id, onCommand }: { id: string | undefined, onC
         }
 
         try {
-            data.push({
+            data.put({
                 userId: {
                     _id: user.userId,
                     name: user.name,
