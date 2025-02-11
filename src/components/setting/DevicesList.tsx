@@ -31,7 +31,7 @@ export default function DevicesList() {
     const [devices, setDevices] = useState<DevicesListType>();
     const [primaryDevice, setPrimaryDevice] = useState<LoginDevice | null>(null);
 
-    const { isPending, data } = useQuery({
+    const { isPending } = useQuery({
         queryKey: ["loginDevices"],
         queryFn: async () => {
             const { data } = await Server.get("/api/user/login-devices");

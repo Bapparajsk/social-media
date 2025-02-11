@@ -24,7 +24,6 @@ import { useNotification } from "@/contexts/notification.context";
 import ChangePasswordCard from "./changePasswordCard";
 import TowFactorAuth from "./2FA";
 import DevicesListModel from "./DevicesListModel";
-import DevicesList from "./DevicesList";
 
 interface Event {
     name: boolean;

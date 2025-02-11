@@ -1,31 +1,43 @@
 import { FormEvent, useState } from "react";
-import { ModalHeader, ModalBody, ModalFooter, Input, Avatar, Button } from "@nextui-org/react";
+import { ModalHeader, ModalBody, ModalFooter, Input, Avatar, Button, User } from "@nextui-org/react";
 import { IconLocation } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import {useFormStatus} from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import axios from "axios";
 
 import Server from "@/lib/axios";
 import { useNotification } from "@/contexts/notification.context";
 import { useUser } from "@/contexts/user.context";
 
+interface CommentType {
+    userId: {
+        _id: string;
+        name: string;
+        title: string | null;
+        profilePicture: string | null;
+    };
+    comment: string;
+    createdAt: Date;
+}
+
 export default function Command({ id, onCommand }: { id: string | undefined, onCommand: () => void }) {
 
     const [comment, setComment] = useState("");
+    const [comments, setComments] = useState<CommentType[]>([]);
 
     const { pending } = useFormStatus();
     const { show: showNotification } = useNotification();
     const { user } = useUser();
 
-    const { data, isLoading, isError } = useQuery({
+    const { isLoading, isError } = useQuery({
         queryKey: ['comments', id],
         queryFn: async () => {
             if (!id) {
                 return [];
             }
             const res = await Server.get(`/api/post/${id}/comments`);
-            onCommand();
+            setComments(res.data.comments);
             return res.data.comments;
         },
         gcTime: 1000 * 60 * 5, // 5 minutes
@@ -48,7 +60,7 @@ export default function Command({ id, onCommand }: { id: string | undefined, onC
         );
     }
 
-                    
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Refactor comment: remove leading/trailing spaces and extra spaces between words
@@ -70,19 +82,24 @@ export default function Command({ id, onCommand }: { id: string | undefined, onC
         }
 
         try {
-            data.put({
-                userId: {
-                    _id: user.userId,
-                    name: user.name,
-                    title: user.title,
-                    profilePicture: user.profilePicture,
+            setComments((prev) => [
+                ...prev,
+                {
+                    userId: {
+                        _id: user.userId,
+                        name: user.name,
+                        title: user.title || null,
+                        profilePicture: user.profilePicture,
+                    },
+                    comment: formattedComment,
+                    createdAt: new Date(),
                 },
-                comment: formattedComment,
-                createdAt: new Date(),
-            });
-            await Server.post(`/api/post/${id}/comment`, { comment: formattedComment });
+            ]);
+            await Server.put(`/api/post/${id}/comment`, { comment: formattedComment });
+            onCommand();
             showNotification("Comment added successfully", "success");
         } catch (e) {
+            console.log(e);
 
             if (!axios.isAxiosError(e)) {
                 showNotification("Something went wrong", "error");
@@ -102,27 +119,27 @@ export default function Command({ id, onCommand }: { id: string | undefined, onC
             <ModalHeader className="flex flex-col gap-1">Commands</ModalHeader>
             <ModalBody>
                 <div className="w-full h-[550px] overflow-y-auto">
-                    {data.slice().reverse().map((comment: any, idx: number) => (
+                    {comments.slice().reverse().map((comment: any, idx: number) => (
                         <Comment key={idx} {...comment} />
                     ))}
                 </div>
             </ModalBody>
             <ModalFooter className="border-t-[1px] border-gray-200 dark:border-gray-700">
-                <form onSubmit={handleSubmit} className="w-full h-auto flex items-center justify-between gap-2 p-2"> 
+                <form onSubmit={handleSubmit} className="w-full h-auto flex items-center justify-between gap-2 p-2">
                     <Avatar src="/newbg.jpeg" />
                     <Input
                         ref={e => e?.focus()}
                         className="tracking-wider"
-                        placeholder="Drop Your Commend..." 
+                        placeholder="Drop Your Commend..."
                         name="comment"
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                         disabled={pending}
                     />
-                    <Button 
-                        isIconOnly 
-                        type="submit" 
-                        variant="ghost" 
+                    <Button
+                        isIconOnly
+                        type="submit"
+                        variant="ghost"
                         color={"success"}
                         isLoading={pending}
                     >
@@ -156,12 +173,16 @@ const Comment = ({
             className="w-full h-auto flex flex-col items-start justify-between gap-2 p-2 border-b-[1px] border-gray-200 dark:border-gray-700">
             <div className="w-full flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <Avatar
-                        src={userId.profilePicture || "/newbg.jpeg"}
-                        onClick={() => router.push(`/profile?uid=${userId._id}`)}
-                        className="cursor-pointer"
+                    <User
+                        avatarProps={{
+                            src: userId.profilePicture || "/newbg.jpeg",
+                            alt: userId.name,
+                            className: "cursor-pointer",
+                            onClick: () => router.push(`/profile?uid=${userId._id}`),
+                        }}
+                        description={userId.title}
+                        name={userId.name}
                     />
-                    <p className="text-sm tracking-wider">{userId.name}</p>
                 </div>
                 <div>
                     <p className="text-xs tracking-wider">
