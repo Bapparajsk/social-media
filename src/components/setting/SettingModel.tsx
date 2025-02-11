@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ModalBody, ModalHeader, Accordion, AccordionItem, Button, Input } from "@nextui-org/react";
+import { ModalBody, ModalHeader, Button, Input } from "@nextui-org/react";
 import {
     IconLockPassword,
     IconSignature,
@@ -17,14 +17,14 @@ import { isAxiosError } from "axios";
 import { redirect } from "next/navigation";
 
 import Server from "@/lib/axios";
-import DevicesList from "./DevicesList";
 import SettingSwitch from "./SettingSwitch";
 import SettingLabels from "./SettingLabels";
 import { useUser } from "@/contexts/user.context";
 import { useNotification } from "@/contexts/notification.context";
 import ChangePasswordCard from "./changePasswordCard";
 import TowFactorAuth from "./2FA";
-
+import DevicesListModel from "./DevicesListModel";
+import DevicesList from "./DevicesList";
 
 interface Event {
     name: boolean;
@@ -46,6 +46,7 @@ interface UserUpdatesType extends InputType {
 
 export default function SettingModel() {
 
+    const [openDevicesLogs, setOpenDevicesLogs] = useState<boolean>(false);
     const [event, setEvent] = useState<EventType>({ name: false, title: false, pass: false });
     const [isChanged, setIsChanged] = useState<Event>({ name: false, title: false });
     const { user, setUser } = useUser();
@@ -55,7 +56,7 @@ export default function SettingModel() {
         redirect("/login");
     }
 
-    const [input, setInput] = useState<InputType>({ name:"", title: "" });
+    const [input, setInput] = useState<InputType>({ name: "", title: "" });
 
     const { mutate, isPending } = useMutation({
         mutationKey: ["setting", user?.name, user?.title],
@@ -96,7 +97,7 @@ export default function SettingModel() {
 
     useEffect(() => {
         setInput({ name: user.name.substring(1) || "", title: user.title || "" });
-    },[user]);
+    }, [user]);
 
     return (
         <>
@@ -104,8 +105,8 @@ export default function SettingModel() {
                 Setting
             </ModalHeader>
             <ModalBody >
-                <div className="w-full h-auto flex flex-col gap-3">
-                    <div className="flex flex-col gap-2 border-b border-gray-200 dark:border-gray-700 pb-2">
+                <div className="w-full flex flex-col gap-3">
+                    <div className="flex flex-col gap-2 border-b border-gray-200 dark:border-gray-700 pb-2 px-2">
                         <p>User</p>
                         <SettingLabels
                             Icon={IconSignature}
@@ -169,35 +170,31 @@ export default function SettingModel() {
                             }
                         />
                     </div>
-                    <div className="flex flex-col gap-2 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex flex-col gap-2 border-b border-gray-200 dark:border-gray-700 px-2">
                         <p>Security</p>
                         <SettingLabels
                             Icon={IconLockPassword}
                             title="Change Password"
                             buttonProps={{ title: "Change", size: "sm", variant: "faded", color: "danger", onPress: (is: boolean) => setEvent({ ...event, "pass": is }), }}
                             eventTrigger={event.pass}
-                            EventComponent={<ChangePasswordCard user={user} setEvent={() => setEvent({...event, pass: false})}/>}
+                            EventComponent={<ChangePasswordCard user={user} setEvent={() => setEvent({ ...event, pass: false })} />}
                         />
                         <TowFactorAuth user={user} onSubmitted={(towFactorAuth: boolean) => {
                             setUser({ ...user, towFactorAuth: towFactorAuth });
-                        }}/>
-                        <div className="max-h-[300px] border-t border-gray-200 dark:border-gray-800">
-                            <Accordion>
-                                <AccordionItem
-                                    key="1" aria-label="Devices"
-                                    title={
-                                        <div className="flex flex-row items-center gap-2">
-                                            <IconDevicesSearch size={24} />
-                                            <span>Devices</span>
-                                        </div>
-                                    }
-                                >
-                                    <DevicesList />
-                                </AccordionItem>
-                            </Accordion>
+                        }} />
+                        <div className="border-t border-gray-200 dark:border-gray-800">
+                            <div className="flex justify-between gap-2 py-3">
+                                <div className="flex flex-row items-center gap-2">
+                                    <IconDevicesSearch size={24} />
+                                    <span>Devices</span>
+                                </div>
+                                <Button size="sm" variant="faded" color="warning" onPress={() => setOpenDevicesLogs(true)}>
+                                    Vew logs
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-2 border-b border-gray-200 dark:border-gray-700 pb-2">
+                    <div className="flex flex-col gap-2 border-b border-gray-200 dark:border-gray-700 pb-2 px-2">
                         <p>Ui</p>
                         <SettingSwitch
                             Icon={IconSun}
@@ -230,6 +227,7 @@ export default function SettingModel() {
                     </div>
                 </div>
             </ModalBody>
+            <DevicesListModel isOpen={openDevicesLogs} onClose={() => setOpenDevicesLogs(false)} />
         </>
     );
 }

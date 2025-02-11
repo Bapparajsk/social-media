@@ -3,7 +3,7 @@ import {
     IconDeviceMobile,
     IconDeviceLaptop,
 } from "@tabler/icons-react";
-import { Checkbox } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 
 const iconMap = {
     mobile: IconDeviceMobile,
@@ -16,28 +16,29 @@ export default function Devices({
     loginDate,
     onChecked,
     type,
-    isSelect
+    isSelect,
+    deviceId,
 }: {
     deviceName: string;
     loginDate: Date;
-    onChecked: (checked: boolean, deviceName: string) => void;
+    onChecked: (id: string) => void;
     type: "mobile" | "laptop" | "apple";
-    isSelect: boolean;
+    isSelect?: boolean;
+    deviceId: string;
 }) {
     const Icon = iconMap[type] || IconDeviceMobile;
 
     return (
-        <div className="flex flex-row items-center justify-between pb-3">
+        <Button fullWidth onPress={() => onChecked(deviceId)} variant={"faded"} color={isSelect ? "danger" : "default"} className="justify-between">
             <div className="flex items-center gap-2">
                 <Icon size={24} />
                 <p>
-                    {deviceName}
-                    <span className="text-neutral-300 dark:text-neutral-600">
-                        {" - "}{loginDate?.toISOString()}
+                    <span className="font-bold">{deviceName}</span>
+                    <span>
+                        {" - "}{new Date(loginDate).toDateString()}
                     </span>
                 </p>
             </div>
-            <Checkbox isSelected={isSelect} onValueChange={(e) => onChecked(e, deviceName)} color="danger" />
-        </div>
+        </Button>
     );
 }
