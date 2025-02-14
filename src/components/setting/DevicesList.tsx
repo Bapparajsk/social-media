@@ -123,7 +123,14 @@ export default function DevicesList() {
                 })}
             </div>
             <div className="mt-3">
-                <Button fullWidth color={"danger"} variant="shadow" isDisabled>Remove Selected</Button>
+                <Button 
+                    fullWidth 
+                    color={"danger"} 
+                    variant="shadow" 
+                    isDisabled
+                >
+                    Remove Selected
+                </Button>
             </div>
         </div>
     );

@@ -133,8 +133,8 @@ export const NavNavigation = () => {
                             <div onClick={() => handleNavigation(item.href)} className={cn(
                                 "flex cursor-pointer items-center gap-1 sm:gap-2 lg:gap-3",
                                 pathname === "/" && item.href === "/" ?
-                                    "text-white" : item.href !== '/' &&
-                                        pathname.includes(item.href) ? "text-white" : "text-gray-400",
+                                    "text-neutral-900 dark:text-white" : item.href !== '/' &&
+                                        pathname.includes(item.href) ? "dark:text-white text-neutral-800" : "dark:text-gray-400 text-neutral-400",
                             )}>
                                 {item.icon && <item.icon className={"w-5 lg:w-7"} />}
                                 <span className="hidden sm:block">{item.title}</span>
@@ -144,7 +144,7 @@ export const NavNavigation = () => {
                     <MotionDiv
                         initial={{
                             width: 0,
-                            backgroundColor: "white",
+                            // backgroundColor: "white",
                         }}
                         animate={{
                             left: barStyle.left,
@@ -154,7 +154,7 @@ export const NavNavigation = () => {
                             left: { type: "spring", stiffness: 700, damping: 30 }, // Position animation
                             width: { type: "spring", stiffness: 700, damping: 30 }, // Width animation
                         }}
-                        className="absolute h-[2px] bg-white -bottom-3 rounded-md hidden sm:block"
+                        className="absolute h-[2px] bg-neutral-900 dark:bg-white -bottom-3 rounded-md hidden sm:block"
                     />
                 </div>
             </div>

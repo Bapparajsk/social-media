@@ -17,6 +17,8 @@ import { isAxiosError } from "axios";
 import { redirect } from "next/navigation";
 
 import Server from "@/lib/axios";
+import { useTheme } from "@/hooks/useTheme";
+import * as notificationHook from "@/hooks/useNotification";
 import SettingSwitch from "./SettingSwitch";
 import SettingLabels from "./SettingLabels";
 import { useUser } from "@/contexts/user.context";
@@ -50,6 +52,8 @@ export default function SettingModel() {
     const [isChanged, setIsChanged] = useState<Event>({ name: false, title: false });
     const { user, setUser } = useUser();
     const { show: notification } = useNotification();
+    const { theme, toggleTheme } = useTheme();
+    const { notificationMood, toggleNotification } = notificationHook.useNotification();
 
     if (user === null) {
         redirect("/login");
@@ -199,7 +203,8 @@ export default function SettingModel() {
                             Icon={IconSun}
                             title="Light Mode"
                             switchProps={{
-                                isSelected: true,
+                                onValueChange: () => toggleTheme(),
+                                isSelected: theme === "dark",
                                 color: "primary",
                                 size: "md",
                                 startContent: <IconMoon size={20} />,
@@ -210,7 +215,8 @@ export default function SettingModel() {
                             Icon={IconBellRinging}
                             title="Notification"
                             switchProps={{
-                                isSelected: true,
+                                onValueChange: () => toggleNotification(),
+                                isSelected: notificationMood === "on",
                                 color: "warning",
                                 size: "md",
                                 startContent: <IconBellOff size={20} />,
