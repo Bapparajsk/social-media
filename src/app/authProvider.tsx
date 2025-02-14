@@ -27,7 +27,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
             loginSocket(data.userId);
             setUser(data);
         }
-    },[data, setUser]);
+    },[data, setUser, loginSocket]);
 
     if (pathname.startsWith('/login') || pathname.startsWith('/register')) {
         queryClient.cancelQueries({ queryKey: ['user'] });
@@ -40,7 +40,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     return (
         <Fragment>
-            {isPending && <p>Loading...</p>}
+            {isPending && <p>loading</p>}
             {isSuccess && children}
         </Fragment>
     );
