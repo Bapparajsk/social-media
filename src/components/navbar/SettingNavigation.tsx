@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { IconSettings, IconSearch } from "@tabler/icons-react";
+import { IconSettings, IconSearch, IconMessage } from "@tabler/icons-react";
 import { Button } from "@nextui-org/button";
-import { usePathname } from "next/navigation";
 import {
     Modal,
     ModalContent,
@@ -9,39 +8,51 @@ import {
 } from "@nextui-org/modal";
 import { SearchModel } from "../search";
 import { SettingModel } from "../setting";
+import { NotificationContainer } from "../notification";
+
+const navigationData : {
+    title: "Search" | "Setting" | "Notification";
+    icon: any;
+}[] = [
+    {
+        title: "Notification",
+        icon: IconMessage
+    },
+    {
+        title: "Search",
+        icon: IconSearch
+    },
+    {
+        title: "Setting",
+        icon: IconSettings
+    }
+];
 
 export const SettingNavigation = () => {
-    const [modalState, setModalState] = useState<"search" | "setting">("setting");
+    const [modalState, setModalState] = useState<"Search" | "Setting" | "Notification">("Setting");
 
-    const pathName = usePathname();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
         <>
             <div className={"flex gap-2"}>
-                <Button 
-                    onPress={() => {setModalState("search"); onOpen();}} 
-                    variant={pathName.startsWith("/search") ? "shadow" : "flat"}
-                >
-                    <div className={"flex gap-2 lg:w-52 justify-between items-end"}>
-                        <IconSearch stroke={1.5} />
-                        <span className="flex-grow h-[1px] rounded-md bottom-0 underline bg-neutral-800 dark:bg-neutral-500 hidden lg:block" />
-                        <span className="text-medium">Search</span>
-                    </div>
-                </Button>
-                <Button  
-                    onPress={() => {setModalState("setting"); onOpen();}}
-                    variant={pathName.startsWith("/setting") ? "shadow" : "flat"}
-                >
-                    <div className={"flex gap-2"}>
-                        <IconSettings stroke={1.5} />
-                        <span className="text-medium">Setting</span>
-                    </div>
-                </Button>
+                {navigationData.map((item, index) => (
+                    <Button
+                        key={index}
+                        onPress={() => { setModalState(item.title); onOpen(); }}
+                        variant="flat"
+                    >
+                        <div className={"flex gap-2"}>
+                            <item.icon stroke={1.5} />
+                            <span className="text-medium">{item.title}</span>
+                        </div>
+                    </Button>
+                ))}
+
             </div>
-            <Modal backdrop="blur" isOpen={isOpen} size={modalState === "setting" ? "lg" : "5xl"} onClose={onClose} isDismissable={false}>
+            <Modal backdrop="blur" isOpen={isOpen} size={modalState === "Search" ? "5xl" : "lg"} onClose={onClose} isDismissable={false}>
                 <ModalContent>
-                    {() => (modalState === "search" ? <SearchModel /> : <SettingModel />)}
+                    {() => (modalState === "Search" ? <SearchModel /> : modalState === "Setting" ? <SettingModel /> : <NotificationContainer/>)}
                 </ModalContent>
             </Modal>
         </>

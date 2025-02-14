@@ -16,6 +16,7 @@ import { SearchModel } from "@/components/search";
 import { SettingModel } from "@/components/setting";
 
 import { cn } from "@/lib/utils";
+import { NotificationContainer } from "../notification";
 
 type NavigationType = {
     title: string;
@@ -59,7 +60,7 @@ const navigation: NavigationType[] = [
 
 export const NavNavigation = () => {
     const [barStyle, setBarStyle] = useState({ left: 0, width: 0 });
-    const [modalState, setModalState] = useState<"chat" | "search" | "setting">("chat");
+    const [modalState, setModalState] = useState<"chat" | "search" | "setting" | "notification">("chat");
     const ref = useRef<HTMLDivElement>(null);
     const activeRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
@@ -73,8 +74,7 @@ export const NavNavigation = () => {
             ref.current && 
             ((pathname === "/" ||
                 pathname.startsWith("/friend") || 
-                pathname.startsWith("/chatlist") || 
-                pathname.startsWith("/notification")
+                pathname.startsWith("/chatlist")
             ))
         ) {
             const target = activeRef.current.getBoundingClientRect();
@@ -98,6 +98,11 @@ export const NavNavigation = () => {
         }
         if (href === "/setting") {
             setModalState("setting");
+            onOpen();
+            return;
+        }
+        if (href === "/notification") {
+            setModalState("notification");
             onOpen();
             return;
         }
@@ -127,7 +132,7 @@ export const NavNavigation = () => {
                             key={index}
                             className={cn(
                                 "text-sm lg:text-medium",
-                                (item.title === "Search" || item.title === "Setting") && "block lg:hidden",
+                                (item.title === "Search" || item.title === "Setting" || item.title === "Notification") && "block lg:hidden",
                             )}
                         >
                             <div onClick={() => handleNavigation(item.href)} className={cn(
@@ -161,14 +166,15 @@ export const NavNavigation = () => {
             <Modal 
                 backdrop="blur" 
                 isOpen={isOpen} 
-                size={modalState === "setting" ? "xl" : width && width < 1024 ? "full" : "5xl"} 
+                size={"xl"} 
                 onClose={onClose}
                 isDismissable={false}
             >
                 <ModalContent>
                     {() => (
                         modalState === "chat" ? <ChatContainerModel/> :
-                        modalState === "search" ? <SearchModel/> : <SettingModel/>
+                        modalState === "search" ? <SearchModel/> : 
+                        modalState === "setting" ? <SettingModel/> : <NotificationContainer/>
                     )}
                 </ModalContent>
             </Modal>

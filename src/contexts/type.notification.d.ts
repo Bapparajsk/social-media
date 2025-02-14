@@ -21,6 +21,6 @@ export interface PushNotificationType {
         "friend-accept" | "friend-request"  | "friend-reject" |
         "notification.ts" | "password"| "email"| "primaryDevice" |
         "login" | "register" | "logout" | undefined;
-    date?: Date;
+    date: Date;
     isRead?: boolean;
 }

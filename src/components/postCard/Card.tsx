@@ -16,6 +16,7 @@ import CommandComponent from "./Command";
 import ShareComponent from "./Share";
 import { useUser } from "@/contexts/user.context";
 import { useNotification } from "@/contexts/notification.context";
+import { refactorDate } from "@/lib/time";
 
 export const Card = ({
     id,
@@ -91,8 +92,8 @@ export const Card = ({
                 <div className="w-full h-auto flex flex-col">
                     <div className="w-full h-auto flex items-center justify-between gap-2 pb-2">
                         <User
-                            name={<div className="flex gap-2 text-sm tracking-wider">
-                                <p>{author?.name} {createdAt && new Date(createdAt).toDateString()} {!isOwner && ":" }</p>
+                            name={<div className="flex gap-2 text-sm">
+                                <p>{author?.name} {createdAt && refactorDate(createdAt)} {!isOwner && ":" }</p>
                                 <p className="text-blue-400 cursor-pointer font-bold">{!isOwner && "Follow"}</p>
                             </div>}
                             description="Software Engineer"

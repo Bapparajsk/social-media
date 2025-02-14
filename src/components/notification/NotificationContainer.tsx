@@ -2,6 +2,7 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useIntersection } from '@mantine/hooks';
+import { ModalBody, ModalHeader } from "@nextui-org/modal";
 
 import Notification from "./Notification";
 import { useNotification } from "@/contexts/notification.context";
@@ -21,7 +22,7 @@ export default function NotificationContainer() {
             const { data } = await Server.get(`/api/notification?page=${pageParam}`);
             setNotifications(data.notifications);
             console.log(data.notifications);
-            
+
             return data;
         },
         getNextPageParam: (lastPage) => lastPage?.nextPage,
@@ -40,12 +41,19 @@ export default function NotificationContainer() {
             fetchNextPage();
         }
     }, [entry, isFetchingNextPage, fetchNextPage]);
-    
+
     return (
-        <div className="w-full h-auto  md:columns-2 lg:columns-3">
-            {notification.reverse().map((notify, index) => ( <div ref={notification.length >= 5 ? ref : null} key={index}>
-                <Notification {...notify} />
-            </div> ))}
-        </div>
+        <>
+            <ModalHeader>
+                <h2 className="text-lg font-bold">Notification</h2>
+            </ModalHeader>
+            <ModalBody>
+                <div className="flex flex-col gap-2 max-h-[70vh] overflow-y-auto overflow-x-hidden">
+                    {notification.reverse().map((notify, index) => (<div ref={index === notification.length - 1 ? ref : null} key={index}>
+                        <Notification {...notify} />
+                    </div>))}
+                </div>
+            </ModalBody>
+        </>
     );
 }
