@@ -5,6 +5,7 @@ import { Toaster, toast } from "sonner";
 import { NotificationContextProps, PushNotificationType } from "./type.notification";
 import { getSocket } from "../lib/socket";
 import Image from "next/image";
+import * as notificationHook from "@/hooks/useNotification";
 
 const NotificationContext = createContext<NotificationContextProps | undefined>(undefined);
 
@@ -12,9 +13,11 @@ export const NotificationProvider = ({ children }: {children: ReactNode}) => {
 
     const [socket,] = useState(getSocket());
     const [notification, setNotification] = useState<PushNotificationType[]>([]);
+    const { notificationMood } = notificationHook.useNotification();
 
     useEffect(() => {
         socket.on("notification", (data: PushNotificationType) => {
+            if (notificationMood === "off") return;
             toast( 
                 <div className="flex items-center space-x-2">
                     <Image src={"/newbg.jpeg"} className="w-12 h-12 rounded-full " alt={data.title} width={50} height={50} />
@@ -26,9 +29,11 @@ export const NotificationProvider = ({ children }: {children: ReactNode}) => {
         return () => {
             socket.off("notification");
         };
-    },[socket]);
+    },[socket, notificationMood]);
 
     const show = (message: string, type?: string) => {
+        if (notificationMood === "off") return;
+        
         const toastType = type || "success";
         
         switch (toastType) {
