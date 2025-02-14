@@ -25,7 +25,7 @@ export const SettingNavigation = () => {
                 >
                     <div className={"flex gap-2 lg:w-52 justify-between items-end"}>
                         <IconSearch stroke={1.5} />
-                        <span className="flex-grow h-[1px] rounded-md bottom-0 underline bg-white hidden lg:block" />
+                        <span className="flex-grow h-[1px] rounded-md bottom-0 underline bg-neutral-800 dark:bg-neutral-500 hidden lg:block" />
                         <span className="text-medium">Search</span>
                     </div>
                 </Button>

@@ -5,7 +5,7 @@ import { Toaster, toast } from "sonner";
 import { NotificationContextProps, PushNotificationType } from "./type.notification";
 import { getSocket } from "../lib/socket";
 import Image from "next/image";
-import * as notificationHook from "@/hooks/useNotification";
+import * as notificationHook from "@/hooks/useUi";
 
 const NotificationContext = createContext<NotificationContextProps | undefined>(undefined);
 
@@ -13,7 +13,7 @@ export const NotificationProvider = ({ children }: {children: ReactNode}) => {
 
     const [socket,] = useState(getSocket());
     const [notification, setNotification] = useState<PushNotificationType[]>([]);
-    const { notificationMood } = notificationHook.useNotification();
+    const { notificationMood } = notificationHook.useUi();
 
     useEffect(() => {
         socket.on("notification", (data: PushNotificationType) => {

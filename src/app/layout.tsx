@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className='dark'>
-      <body className={"max-w-[1200px] mx-auto"}>
+      <body className={"max-w-[1200px] mx-auto font-poppins"}>
         <Providers>
             <NavbarComponent/>
             <main>

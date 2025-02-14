@@ -7,13 +7,11 @@ import AuthProvider from "./authProvider";
 import { UserProvider } from "@/contexts/user.context";
 import { ProfileProvider } from "@/contexts/profile.context";
 import { NotificationProvider } from "@/contexts/notification.context";
-import { useTheme } from "@/hooks/useTheme";
-import { useNotification } from "@/hooks/useNotification";
+import { useUi } from "@/hooks/useUi";
 
 export function Providers({children}: { children: ReactNode }) {
     const [queryClient,] = useState(new QueryClient());
-    useTheme();
-    useNotification();
+    useUi();
 
     return (
         <NextUIProvider>

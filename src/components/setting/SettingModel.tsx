@@ -11,14 +11,15 @@ import {
     IconBell,
     IconBellOff,
     IconDevicesSearch,
+    IconLayoutNavbarCollapse,
+    IconLayoutNavbar,
 } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { redirect } from "next/navigation";
 
 import Server from "@/lib/axios";
-import { useTheme } from "@/hooks/useTheme";
-import * as notificationHook from "@/hooks/useNotification";
+import { useUi } from "@/hooks/useUi";
 import SettingSwitch from "./SettingSwitch";
 import SettingLabels from "./SettingLabels";
 import { useUser } from "@/contexts/user.context";
@@ -52,8 +53,7 @@ export default function SettingModel() {
     const [isChanged, setIsChanged] = useState<Event>({ name: false, title: false });
     const { user, setUser } = useUser();
     const { show: notification } = useNotification();
-    const { theme, toggleTheme } = useTheme();
-    const { notificationMood, toggleNotification } = notificationHook.useNotification();
+    const { theme, toggleTheme, notificationMood, toggleNotification, stickyHeader, toggleStickyHeader } = useUi();
 
     if (user === null) {
         redirect("/login");
@@ -205,7 +205,7 @@ export default function SettingModel() {
                             switchProps={{
                                 onValueChange: () => toggleTheme(),
                                 isSelected: theme === "dark",
-                                color: "primary",
+                                color: "success",
                                 size: "md",
                                 startContent: <IconMoon size={20} />,
                                 endContent: <IconSun size={20} />,
@@ -221,6 +221,23 @@ export default function SettingModel() {
                                 size: "md",
                                 startContent: <IconBellOff size={20} />,
                                 endContent: <IconBell size={20} />,
+                            }}
+                        />
+                        <SettingSwitch
+                            Icon={IconLayoutNavbarCollapse}
+                            title={
+                                <>
+                                    Sticky Header
+                                    <span className="text-[12px] text-gray-500 dark:text-gray-400">(Sticky header on scroll)</span>
+                                </>
+                            }
+                            switchProps={{
+                                onValueChange: () => toggleStickyHeader(),
+                                isSelected: stickyHeader === "on",
+                                color: "secondary",
+                                size: "md",
+                                startContent: <IconLayoutNavbar size={20}/>,
+                                endContent: <IconLayoutNavbarCollapse size={20} />,
                             }}
                         />
                     </div>
